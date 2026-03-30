@@ -38,7 +38,7 @@ RaceDwarf {
 RaceElf {
     Title! = "Elf"
     BaseWalkingSpeed! = Near
-    RacialTraits! = "Farsight: +1 bonus to attack rolls with ranged weapons or +1 bonus to spellcasting checks"
+    RacialTraits! = "Farsight: +1 to ranged attack rolls or spellcasting checks"
     BaseLanguages! = "Common, Elvish, Sylvan"
     Feature! @ [
         * long, pointy ears
@@ -61,6 +61,1049 @@ RaceHalfling {
         * short, chunky fingers
         * extremely large feet, even for a halfling
         * round, bulbous nose
+        * chubby cheeks
+        * big red cheeks
+        * bushy eyebrows
+        * a patterned coat
+        * a vibrant coat
+        * oversized suspenders
+    ]
+}
+
+RaceHalfOrc {
+    Title! = "Half-Orc"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Mighty: +1 to melee attack and damage rolls"
+    BaseLanguages! = "Common, Orcish"
+    Feature! @ [
+        * a strong, muscular physique
+        * a deep scar on the right arm
+        * a broken nose
+        * a big nose-ring
+        * a strong, angular jaw
+        * a greenish-gray skin
+        * sharp, tusk-like teeth
+        * prominent brows
+        * a heavy, muscular build
+        * scars across the arms
+        * tribal tattoos on the arms
+        * a wide, flat nose
+        * a broad, flat nose
+    ]
+}
+
+RaceGoblin {
+    Title! = "Goblin"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Keen Senses: you can't be surprised"
+    BaseLanguages! = "Common, Goblin"
+    Feature! @ [
+        * enormous bat-like ears
+        * bright yellow eyes and mottled green skin
+        * a wide gap-toothed grin
+        * small but surprisingly nimble hands
+        * a collection of shiny trinkets sewn into clothing
+        * a flat, wide nose
+        * sharp, beady eyes
+    ]
+}
+
+Race {
+    ^ [
+        * RaceHuman
+        * RaceDwarf
+        * RaceElf
+        * RaceHalfling
+        * RaceHalfOrc
+        * RaceGoblin
+    ]
+}
+
+# ---------------------------------------------------------------------------
+# NPC BASE
+# ---------------------------------------------------------------------------
+
+SDNPC (Character) {
+    | Character
+
+    Race @ Race
+
+    Alignment @ [
+        * Lawful
+        * Neutral
+        * Neutral
+        * Neutral
+        * Chaotic
+    ]
+
+    Background! @ [
+        * Urchin. You grew up in the merciless streets of a large city
+        * Wanted. There's a price on your head, but you have allies
+        * Cult Initiate. You know blasphemous secrets and rituals
+        * Thieves' Guild. You have connections, contacts, and debts
+        * Banished. Your people cast you out for supposed crimes
+        * Orphaned. An unusual guardian rescued and raised you
+        * Wizard's Apprentice. You have a knack and eye for magic
+        * Jeweler. You can easily appraise value and authenticity
+        * Herbalist. You know plants, medicines, and poisons
+        * Barbarian. You left the horde, but it never quite left you
+        * Mercenary. You fought friend and foe alike for your coin
+        * Sailor. Pirate, privateer, or merchant — the seas are yours
+        * Acolyte. You're well trained in religious rites and doctrines
+        * Soldier. You served as a fighter in an organized army
+        * Ranger. The woods and wilds are your true home
+        * Scout. You survived on stealth, observation, and speed
+        * Minstrel. You've traveled far with your charm and talent
+        * Scholar. You know much about ancient history and lore
+        * Noble. A famous name has opened many doors for you
+        * Chirurgeon. You know anatomy, surgery, and first aid
+    ]
+
+    Profession! = none
+
+    Appearance! @ [
+        * {{Gender.Feature}}, {{Feature1}} and {%if exists("AppearanceFeature")%}{{AppearanceFeature}}{% else if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+        * {{Feature1}}, {{Gender.Feature}} and {%if exists("AppearanceFeature")%}{{AppearanceFeature}}{% else if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+        * {{Gender.Feature}}, {{Feature1}} and {% if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+        * {{Feature1}}, {{Gender.Feature}} and {% if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+    ]
+
+    $IndexRef @ IndexedEntity {
+        Render = "Name"
+        Details = <%A level {{Level}} {{Race.Title}} {{Class}}{{maybe2(", the ", Profession)}} {{maybe2("from ",capitalize(SettlementName))}}%>
+        Anchor = &uuid
+        Link = &HostingEntity
+        Type = "location"
+        Full = ""
+        Search = "{{Full}}"
+        Icon = "user"
+    }
+
+    CalculatedAC! ~ <%{{ArmorValue}}%>
+
+    Description! ~ <%
+        <strong>{{Name.Full}}</strong>, a level {{Level}} {{Race.Title}} {{Class}}.{{note_button(uuid)}}
+        {{DescriptionInscript}}
+        {{capitalize(Gender.PronounSubject)}} {{Gender.Possession}} {{Appearance}} (<em>{{State}}</em>).
+        {{InThePocket.Details}}
+        {{note_container(uuid)}}
+        {{DescriptionPostscript}}
+    %>
+
+    Stats! ~ <%
+        {% set StrMod = round((BaseStrength - 10.5) / 2, 0) %}
+        {% set DexMod = round((BaseDexterity - 10.5) / 2, 0) %}
+        {% set ConMod = round((BaseConstitution - 10.5) / 2, 0) %}
+        {% set IntMod = round((BaseIntelligence - 10.5) / 2, 0) %}
+        {% set WisMod = round((BaseWisdom - 10.5) / 2, 0) %}
+        {% set ChaMod = round((BaseCharisma - 10.5) / 2, 0) %}
+        <div id="block-{{uuid}}" class="monster-block">
+        <div class="statblock">
+        <hr/>
+        <div class="statblock-top-row">
+            <div><span class="section-label">LV:</span> {{Level}}</div>
+            <div><span class="section-label">AC:</span> {{CalculatedAC}}</div>
+            <div><span class="section-label">HP:</span> {{CalculatedHP}}</div>
+            <div><span class="section-label">MV:</span> {{Race.BaseWalkingSpeed}}</div>
+        </div>
+        {% set StrBonus = 0 %}
+        {% set DexBonus = 0 %}
+        {% set ConBonus = 0 %}
+        {% set IntBonus = 0 %}
+        {% set WisBonus = 0 %}
+        {% set ChaBonus = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% set FinalStr = BaseStrength + StrBonus %}
+        {% set FinalDex = BaseDexterity + DexBonus %}
+        {% set FinalCon = BaseConstitution + ConBonus %}
+        {% set FinalInt = BaseIntelligence + IntBonus %}
+        {% set FinalWis = BaseWisdom + WisBonus %}
+        {% set FinalCha = BaseCharisma + ChaBonus %}
+        {% set FinalIntMod = round((FinalInt - 10.5) / 2, 0) %}
+        {% set FinalWisMod = round((FinalWis - 10.5) / 2, 0) %}
+        {% set FinalChaMod = round((FinalCha - 10.5) / 2, 0) %}
+        {% set FinalStrMod = round((FinalStr - 10.5) / 2, 0) %}
+        {% set FinalDexMod = round((FinalDex - 10.5) / 2, 0) %}
+        {% set FinalConMod = round((FinalCon - 10.5) / 2, 0) %}
+        <table class="statblock-table">
+            <tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr>
+            <tr>
+                <td>{{FinalStr}} ({{signed_modifier(FinalStrMod)}})</td>
+                <td>{{FinalDex}} ({{signed_modifier(FinalDexMod)}})</td>
+                <td>{{FinalCon}} ({{signed_modifier(FinalConMod)}})</td>
+                <td>{{FinalInt}} ({{signed_modifier(FinalIntMod)}})</td>
+                <td>{{FinalWis}} ({{signed_modifier(FinalWisMod)}})</td>
+                <td>{{FinalCha}} ({{signed_modifier(FinalChaMod)}})</td>
+            </tr>
+        </table>
+        <div>
+            <input class="monster-block-toggle" name="toggle-{{uuid}}" id="toggle-{{uuid}}" type="checkbox"
+                onclick="javascript:document.getElementById('block-{{uuid}}').scrollIntoView();"/>
+            <div id="block-toggle-{{uuid}}" class="statblock-container">
+                <ul>
+                    {% if exists("MeleeATK") or exists("RangedATK") %}
+                    <li><strong>ATK:</strong>
+                        {% if exists("MeleeATK") %}Melee: {{MeleeATK}}{% endif %}
+                        {% if exists("MeleeATK") and exists("RangedATK") %} &nbsp;|&nbsp; {% endif %}
+                        {% if exists("RangedATK") %}Ranged: {{RangedATK}}{% endif %}
+                    </li>
+                    {% endif %}
+                    {% if exists("IntCasting") or exists("WisCasting") %}
+                    <li><strong>Casting:</strong>
+                        {% if exists("IntCasting") %}INT: {{IntCasting}}{% endif %}
+                        {% if exists("IntCasting") and exists("WisCasting") %} &nbsp;|&nbsp; {% endif %}
+                        {% if exists("WisCasting") %}WIS: {{WisCasting}}{% endif %}
+                    </li>
+                    {% endif %}
+                    <li><strong>AL:</strong> {{Alignment}}</li>
+                    <li><strong>Title:</strong>
+                        {% if Alignment == "Lawful" %}
+                            {% if Level <= 2 %}Squire{% else if Level <= 4 %}Cavalier{% else if Level <= 6 %}Knight{% else if Level <= 8 %}Thane{% else %}Lord{% endif %}
+                        {% else if Alignment == "Chaotic" %}
+                            {% if Level <= 2 %}Knave{% else if Level <= 4 %}Bandit{% else if Level <= 6 %}Slayer{% else if Level <= 8 %}Reaver{% else %}Warlord{% endif %}
+                        {% else %}
+                            {% if Level <= 2 %}Warrior{% else if Level <= 4 %}Barbarian{% else if Level <= 6 %}Battlerager{% else if Level <= 8 %}Warchief{% else %}Chieftain{% endif %}
+                        {% endif %}
+                    </li>
+                    {% if exists("Background") %}
+                    <li><strong>Background:</strong> {{Background}}</li>
+                    {% endif %}
+                    {% if exists("Languages") %}
+                    <li><strong>Languages:</strong> {{Languages}}</li>
+                    {% endif %}
+                    {% if Race.RacialTraits != "" %}
+                    <li><strong>{{Race.Title}}:</strong> {{Race.RacialTraits}}</li>
+                    {% endif %}
+                    {% if exists("ClassTalents") %}
+                    <li><strong>Talents:</strong> {{ClassTalents}}</li>
+                    {% endif %}
+                    {% if exists("ClassAbility") %}
+                    <li><strong>{{Class}}:</strong> {{ClassAbility}}</li>
+                    {% endif %}
+                    {% set ACB = 0 %}
+                    {% if exists("Talent1") and Talent1.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent3") and Talent3.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent4") and Talent4.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent5") and Talent5.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent6") and Talent6.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if ACB > 0 %}
+                    <li><strong>AC Talent:</strong> +{{ACB}} ({{Armor.Name}})</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        </div>
+        </div>
+    %>
+
+    Languages! ~ <% {{Race.BaseLanguages}} %>
+}
+
+# ---------------------------------------------------------------------------
+# WEAPONS
+# ---------------------------------------------------------------------------
+
+SDWeapon {
+    WeaponName! :: STRING
+    DamageRoll! :: STRING
+    WeaponRange! :: STRING
+}
+
+# Melee weapons — STR based
+SDBastardSword (SDWeapon) { WeaponName! ~ "Bastard sword" DamageRoll! ~ "1d8" WeaponRange! ~ "close" }
+SDGreatsword (SDWeapon) { WeaponName! ~ "Greatsword" DamageRoll! ~ "1d12" WeaponRange! ~ "close" }
+SDLongsword (SDWeapon) { WeaponName! ~ "Longsword" DamageRoll! ~ "1d8" WeaponRange! ~ "close" }
+SDWarhammer (SDWeapon) { WeaponName! ~ "Warhammer" DamageRoll! ~ "1d10" WeaponRange! ~ "close" }
+SDGreataxe (SDWeapon) { WeaponName! ~ "Greataxe" DamageRoll! ~ "1d8" WeaponRange! ~ "close" }
+SDMace (SDWeapon) { WeaponName! ~ "Mace" DamageRoll! ~ "1d6" WeaponRange! ~ "close" }
+SDSpear (SDWeapon) { WeaponName! ~ "Spear" DamageRoll! ~ "1d6" WeaponRange! ~ "close/near" }
+SDClub (SDWeapon) { WeaponName! ~ "Club" DamageRoll! ~ "1d4" WeaponRange! ~ "close" }
+
+# Finesse weapons — DEX based
+SDShortsword (SDWeapon) { WeaponName! ~ "Shortsword" DamageRoll! ~ "1d6" WeaponRange! ~ "close" }
+SDDagger (SDWeapon) { WeaponName! ~ "Dagger" DamageRoll! ~ "1d4" WeaponRange! ~ "close/near" }
+
+# Ranged weapons — DEX based
+SDLongbow (SDWeapon) { WeaponName! ~ "Longbow" DamageRoll! ~ "1d8" WeaponRange! ~ "far" }
+SDCrossbow (SDWeapon) { WeaponName! ~ "Crossbow" DamageRoll! ~ "1d6" WeaponRange! ~ "far" }
+SDShortbow (SDWeapon) { WeaponName! ~ "Shortbow" DamageRoll! ~ "1d4" WeaponRange! ~ "far" }
+SDJavelin (SDWeapon) { WeaponName! ~ "Javelin" DamageRoll! ~ "1d4" WeaponRange! ~ "near" }
+
+# STR Fighter melee pool — heavy weapons
+SDFighterMelee {
+    ^ [
+        *(x3) SDBastardSword
+        *(x3) SDLongsword
+        *(x3) SDGreatsword
+        *(x2) SDWarhammer
+        *(x2) SDGreataxe
+        *(x2) SDMace
+        *     SDSpear
+        *     SDClub
+    ]
+}
+
+# DEX Fighter melee pool — finesse weapons
+SDDEXFighterMelee {
+    ^ [
+        *(x3) SDShortsword
+        *(x2) SDDagger
+        *     SDSpear
+    ]
+}
+
+# Ranged pool — shared by both fighter types
+SDFighterRanged {
+    ^ [
+        *(x3) SDLongbow
+        *(x2) SDCrossbow
+        *(x2) SDShortbow
+        *     SDJavelin
+    ]
+}
+
+SDFighterMasteryOther {
+    ^ [
+        * SDBastardSword
+        * SDGreatsword
+        * SDLongsword
+        * SDWarhammer
+        * SDGreataxe
+        * SDMace
+        * SDSpear
+        * SDClub
+    ]
+}
+
+SDDEXFighterMasteryOther {
+    ^ [
+        * SDShortsword
+        * SDDagger
+        * SDSpear
+        * SDLongbow
+        * SDCrossbow
+        * SDShortbow
+    ]
+}
+
+# ---------------------------------------------------------------------------
+# ARMOR
+# ---------------------------------------------------------------------------
+
+SDLeatherArmor {
+    Name! ~ "Leather"
+    BaseAC! = 11
+    UsesDex! = true
+}
+
+SDLeatherArmorShield {
+    Name! ~ "Leather + shield"
+    BaseAC! = 11
+    UsesDex! = true
+    ShieldBonus! = 2
+}
+
+SDChainmail {
+    Name! ~ "Chainmail"
+    BaseAC! = 13
+    UsesDex! = true
+}
+
+SDChainmailShield {
+    Name! ~ "Chainmail + shield"
+    BaseAC! = 13
+    UsesDex! = true
+    ShieldBonus! = 2
+}
+
+SDPlatemail {
+    Name! ~ "Plate mail"
+    BaseAC! = 15
+    UsesDex! = false
+}
+
+SDPlatemailShield {
+    Name! ~ "Plate mail + shield"
+    BaseAC! = 15
+    UsesDex! = false
+    ShieldBonus! = 2
+}
+
+SDFighterArmor {
+    ^ [
+        *(x3) SDChainmail
+        *(x2) SDPlatemail
+        *(x2) SDChainmailShield
+        *(x2) SDPlatemailShield
+        *     SDLeatherArmor
+    ]
+}
+
+SDDEXFighterArmor {
+    ^ [
+        *(x3) SDLeatherArmor
+        *(x2) SDLeatherArmorShield
+        *(x2) SDChainmail
+        *     SDChainmailShield
+    ]
+}
+
+# ---------------------------------------------------------------------------
+# FIGHTER TALENTS
+# ---------------------------------------------------------------------------
+
+FighterWeaponMasteryTalent {
+    W @ SDFighterMelee
+    Description! ~ <%Weapon Mastery ({{W.WeaponName}})%>
+}
+
+FighterDEXWeaponMasteryTalent {
+    W @ SDDEXFighterMelee
+    Description! ~ <%Weapon Mastery ({{W.WeaponName}})%>
+}
+
+FighterTalentStatSTR {
+    Description! ~ "+2 to STR"
+}
+
+FighterTalentStatCON {
+    Description! ~ "+2 to CON"
+}
+
+FighterTalentStatDEX {
+    Description! ~ "+2 to DEX"
+}
+
+FighterStatTalent {
+    ^ [
+        * FighterTalentStatSTR
+        * FighterTalentStatCON
+    ]
+}
+
+FighterDEXStatTalent {
+    ^ [
+        * FighterTalentStatDEX
+        * FighterTalentStatCON
+    ]
+}
+
+FighterTalent {
+    ^ [
+        *     FighterWeaponMasteryTalent
+        *(x4) FighterTalentAttack
+        *(x3) FighterStatTalent
+        *(x2) FighterTalentAC
+        *     FighterTalentChoice
+    ]
+}
+
+FighterDEXTalent {
+    ^ [
+        *     FighterDEXWeaponMasteryTalent
+        *(x4) FighterTalentAttack
+        *(x3) FighterDEXStatTalent
+        *(x2) FighterTalentAC
+        *     FighterDEXTalentChoice
+    ]
+}
+
+FighterTalentAttack { Description! ~ "+1 to melee and ranged attacks" }
+FighterTalentAC { Description! ~ "+1 AC from chosen armor type" }
+FighterTalentChoiceStat {
+    Description! @ [
+        * +2 to STR
+        * +2 to DEX
+        * +2 to CON
+        * +2 to INT
+        * +2 to WIS
+        * +2 to CHA
+    ]
+}
+
+FighterTalentChoiceReroll {
+    ^ [
+        *     FighterWeaponMasteryTalent
+        *(x4) FighterTalentAttack
+        *(x3) FighterStatTalent
+        *(x2) FighterTalentAC
+    ]
+}
+
+FighterDEXTalentChoiceReroll {
+    ^ [
+        *     FighterDEXWeaponMasteryTalent
+        *(x4) FighterTalentAttack
+        *(x3) FighterDEXStatTalent
+        *(x2) FighterTalentAC
+    ]
+}
+
+FighterTalentChoice {
+    ^ [
+        * FighterTalentChoiceStat
+        * FighterTalentChoiceReroll
+    ]
+}
+
+FighterDEXTalentChoice {
+    ^ [
+        * FighterTalentChoiceStat
+        * FighterDEXTalentChoiceReroll
+    ]
+}
+
+# ---------------------------------------------------------------------------
+# STR FIGHTER — high STR/CON, heavy melee, Half-Orc bonus on melee
+# ---------------------------------------------------------------------------
+
+Fighter (SDNPC) {
+    Race   @ Race
+    Class! = "Fighter"
+
+    MeleeWeapon @ SDFighterMelee
+    RangedWeapon @ SDFighterRanged
+    Armor @ SDFighterArmor
+
+    ArmorValue! ~ <%
+        {% set DexMod = round((BaseDexterity - 10.5) / 2, 0) %}
+        {% set ShieldBonus = 0 %}
+        {% if existsIn(Armor, "ShieldBonus") %}{% set ShieldBonus = Armor.ShieldBonus %}{% endif %}
+        {% set ACB = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if Armor.UsesDex %}
+            {{Armor.BaseAC + DexMod + ShieldBonus + ACB}} ({{Armor.Name}})
+        {% else %}
+            {{Armor.BaseAC + ShieldBonus + ACB}} ({{Armor.Name}})
+        {% endif %}
+    %>
+
+    CalculatedHP! ~ <%
+        {% set FinalCon = BaseConstitution %}
+        {% set ConBonus = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% set FinalCon = BaseConstitution + ConBonus %}
+        {% set ConMod = round((FinalCon - 10.5) / 2, 0) %}
+        {% set DBonus = 0 %}
+        {% if Race.class == "RaceDwarf" %}{% set DBonus = 2 %}{% endif %}
+        {{max(8 + HPDice + ConMod + DBonus, 1)}}
+    %>
+
+    MeleeATK! ~ <%
+        {% set StrMod = round((BaseStrength - 10.5) / 2, 0) %}
+        {% set RaceBonus = 0 %}
+        {% if Race.class == "RaceHalfOrc" %}{% set RaceBonus = 1 %}{% endif %}
+        {% set ATB = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% set Total = StrMod + RaceBonus + ATB %}
+        {% set Dmg = MeleeWeapon.DamageRoll %}
+        {% if Race.class == "RaceHalfOrc" %}{% set Dmg = MeleeWeapon.DamageRoll + "+1" %}{% endif %}
+        {{MeleeWeapon.WeaponName}} {%if Total >= 0%}+{{Total}}{%else%}{{Total}}{%endif%} ({{Dmg}})
+    %>
+
+    RangedATK! ~ <%
+        {% set DexMod = round((BaseDexterity - 10.5) / 2, 0) %}
+        {% set ATB = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% set Total = DexMod + ATB %}
+        {% if Race.class == "RaceElf" %}
+            {{RangedWeapon.WeaponName}} {%if Total >= 0%}+{{Total}}{%else%}{{Total}}{%endif%} (+{{Total + 1}}*) ({{RangedWeapon.DamageRoll}})
+        {% else %}
+            {{RangedWeapon.WeaponName}} {%if Total >= 0%}+{{Total}}{%else%}{{Total}}{%endif%} ({{RangedWeapon.DamageRoll}})
+        {% endif %}
+    %>
+
+    MasteryOther @ SDFighterMasteryOther
+
+
+
+    Talent1! @ FighterTalent
+    Talent2! @ FighterTalent
+
+    ClassAbility! ~ <%
+        Weapon Mastery ({{MeleeWeapon.WeaponName}}), Grit (Strength), Hauler.
+    %>
+
+
+    ClassTalents! ~ <%
+        {{Talent1.Description}}
+        {%if exists("Talent2") and Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+        {%if exists("Talent3")%}; {{Talent3.Description}}{%endif%}
+        {%if exists("Talent4")%}; {{Talent4.Description}}{%endif%}
+        {%if exists("Talent5")%}; {{Talent5.Description}}{%endif%}
+        {%if exists("Talent6")%}; {{Talent6.Description}}{%endif%}
+    %>
+
+    | SDNPC
+}
+
+# ---------------------------------------------------------------------------
+# DEX FIGHTER — high DEX/CON, finesse melee + ranged, Elf bonus on ranged
+# ---------------------------------------------------------------------------
+
+FighterDEX (SDNPC) {
+    Race   @ Race
+    Class! = "Fighter"
+
+    MeleeWeapon @ SDDEXFighterMelee
+    RangedWeapon @ SDFighterRanged
+    Armor @ SDDEXFighterArmor
+
+    ArmorValue! ~ <%
+        {% set DexMod = round((BaseDexterity - 10.5) / 2, 0) %}
+        {% set ShieldBonus = 0 %}
+        {% if existsIn(Armor, "ShieldBonus") %}{% set ShieldBonus = Armor.ShieldBonus %}{% endif %}
+        {% set ACB = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+        {% if Armor.UsesDex %}
+            {{Armor.BaseAC + DexMod + ShieldBonus + ACB}} ({{Armor.Name}})
+        {% else %}
+            {{Armor.BaseAC + ShieldBonus + ACB}} ({{Armor.Name}})
+        {% endif %}
+    %>
+
+    CalculatedHP! ~ <%
+        {% set FinalCon = BaseConstitution %}
+        {% set ConBonus = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% set FinalCon = BaseConstitution + ConBonus %}
+        {% set ConMod = round((FinalCon - 10.5) / 2, 0) %}
+        {% set DBonus = 0 %}
+        {% if Race.class == "RaceDwarf" %}{% set DBonus = 2 %}{% endif %}
+        {{max(8 + HPDice + ConMod + DBonus, 1)}}
+    %>
+
+    MeleeATK! ~ <%
+        {% set DexMod = round((BaseDexterity - 10.5) / 2, 0) %}
+        {% set RaceBonus = 0 %}
+        {% if Race.class == "RaceHalfOrc" %}{% set RaceBonus = 1 %}{% endif %}
+        {% set ATB = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% set Total = DexMod + RaceBonus + ATB %}
+        {% set Dmg = MeleeWeapon.DamageRoll %}
+        {% if Race.class == "RaceHalfOrc" %}{% set Dmg = MeleeWeapon.DamageRoll + "+1" %}{% endif %}
+        {{MeleeWeapon.WeaponName}} {%if Total >= 0%}+{{Total}}{%else%}{{Total}}{%endif%} ({{Dmg}})
+    %>
+
+    RangedATK! ~ <%
+        {% set DexMod = round((BaseDexterity - 10.5) / 2, 0) %}
+        {% set ATB = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+1 to melee and ranged attacks" %}{% set ATB = ATB + 1 %}{% endif %}
+        {% set Total = DexMod + ATB %}
+        {% if Race.class == "RaceElf" %}
+            {{RangedWeapon.WeaponName}} {%if Total >= 0%}+{{Total}}{%else%}{{Total}}{%endif%} (+{{Total + 1}}*) ({{RangedWeapon.DamageRoll}})
+        {% else %}
+            {{RangedWeapon.WeaponName}} {%if Total >= 0%}+{{Total}}{%else%}{{Total}}{%endif%} ({{RangedWeapon.DamageRoll}})
+        {% endif %}
+    %>
+
+    MasteryOther @ SDDEXFighterMasteryOther
+
+
+
+    Talent1! @ FighterDEXTalent
+    Talent2! @ FighterDEXTalent
+
+    ClassAbility! ~ <%
+        Weapon Mastery ({{MeleeWeapon.WeaponName}}), Grit (Dexterity), Hauler.
+    %>
+
+
+    ClassTalents! ~ <%
+        {{Talent1.Description}}
+        {%if exists("Talent2") and Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+        {%if exists("Talent3")%}; {{Talent3.Description}}{%endif%}
+        {%if exists("Talent4")%}; {{Talent4.Description}}{%endif%}
+        {%if exists("Talent5")%}; {{Talent5.Description}}{%endif%}
+        {%if exists("Talent6")%}; {{Talent6.Description}}{%endif%}
+    %>
+
+    | SDNPC
+}
+
+# ---------------------------------------------------------------------------
+# FIGHTER LEVELS 1-10
+# STR variant: high STR primary, CON secondary
+# DEX variant: high DEX primary, CON secondary
+# HP: 8 base + scaling dice + CON mod + Dwarf +2
+# ---------------------------------------------------------------------------
+
+FighterLevel1 (Fighter) {
+    Level! = 1
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! = 0
+    | Fighter
+}
+
+FighterDEXLevel1 (FighterDEX) {
+    Level! = 1
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+3
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! = 0
+    | FighterDEX
+}
+
+FighterLevel2 (Fighter) {
+    Level! = 2
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8
+    | Fighter
+}
+
+FighterDEXLevel2 (FighterDEX) {
+    Level! = 2
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+3
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8
+    | FighterDEX
+}
+
+FighterLevel3 (Fighter) {
+    Level! = 3
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8
+    Talent3! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel3 (FighterDEX) {
+    Level! = 3
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+3
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8
+    Talent3! @ FighterDEXTalent
+    | FighterDEX
+}
+
+FighterLevel4 (Fighter) {
+    Level! = 4
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8
+    Talent3! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel4 (FighterDEX) {
+    Level! = 4
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+3
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8
+    Talent3! @ FighterDEXTalent
+    | FighterDEX
+}
+
+FighterLevel5 (Fighter) {
+    Level! = 5
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel5 (FighterDEX) {
+    Level! = 5
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+3
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8
+    Talent3! @ FighterDEXTalent
+    Talent4! @ FighterDEXTalent
+    | FighterDEX
+}
+
+FighterLevel6 (Fighter) {
+    Level! = 6
+    BaseStrength     @ 5d3+4
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel6 (FighterDEX) {
+    Level! = 6
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+4
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterDEXTalent
+    Talent4! @ FighterDEXTalent
+    | FighterDEX
+}
+
+FighterLevel7 (Fighter) {
+    Level! = 7
+    BaseStrength     @ 5d3+4
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel7 (FighterDEX) {
+    Level! = 7
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+4
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterDEXTalent
+    Talent4! @ FighterDEXTalent
+    Talent5! @ FighterDEXTalent
+    | FighterDEX
+}
+
+FighterLevel8 (Fighter) {
+    Level! = 8
+    BaseStrength     @ 5d3+4
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel8 (FighterDEX) {
+    Level! = 8
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+4
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterDEXTalent
+    Talent4! @ FighterDEXTalent
+    Talent5! @ FighterDEXTalent
+    | FighterDEX
+}
+
+FighterLevel9 (Fighter) {
+    Level! = 9
+    BaseStrength     @ 5d3+5
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    Talent6! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel9 (FighterDEX) {
+    Level! = 9
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+5
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterDEXTalent
+    Talent4! @ FighterDEXTalent
+    Talent5! @ FighterDEXTalent
+    Talent6! @ FighterDEXTalent
+    | FighterDEX
+}
+
+FighterLevel10 (Fighter) {
+    Level! = 10
+    BaseStrength     @ 5d3+5
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+5
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    Talent6! @ FighterTalent
+    | Fighter
+}
+
+FighterDEXLevel10 (FighterDEX) {
+    Level! = 10
+    BaseStrength     @ 3d6
+    BaseDexterity    @ 5d3+5
+    BaseConstitution @ 4d3+5
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HPDice! @ 1d8+1d8+1d8+1d8+1d8+1d8+1d8+1d8+1d8
+    Talent3! @ FighterDEXTalent
+    Talent4! @ FighterDEXTalent
+    Talent5! @ FighterDEXTalent
+    Talent6! @ FighterDEXTalent
+    | FighterDEX
+}
+
+# ---------------------------------------------------------------------------
+# TEST
+# ---------------------------------------------------------------------------
+
+main {
+    [6..6 fighters] @@ [
+        * FighterLevel1
+        * FighterDEXLevel1
+        * FighterLevel3
+        * FighterDEXLevel5
+        * FighterLevel8
+        * FighterDEXLevel10
+    ]
+    <html%
+    {% for f in fighters %}
+    <h3>{{f.Description}}</h3>
+    {{f.Stats}}
+    {% endfor %}
+    %html>
+}
         * chubby cheeks
         * big red cheeks
         * bushy eyebrows
