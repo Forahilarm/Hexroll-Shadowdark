@@ -1,0 +1,303 @@
+# Shadowdark Fighter for Hexroll 2E
+# ------------------------------------
+# Weapons: All
+# Armor: All + shields
+# HP: 1d8 per level + CON mod at level 1
+# Primary stat: STR (high roll)
+# Secondary stat: CON (good roll)
+# Talent rolls: 2 at level 1 if Human, 1 otherwise
+# New talent at levels 3, 5, 7, 9
+
++ O5E
+
+# ---------------------------------------------------------------------------
+# Fighter talent table (2d6)
+# ---------------------------------------------------------------------------
+
+FighterTalent {
+    ^ [
+        * Weapon Mastery with one additional weapon type
+        *(x4) +1 to melee and ranged attacks
+        *(x3) +2 to Strength, Dexterity, or Constitution
+        *(x2) +1 AC from chosen armor type
+               Choose a talent or +2 points to distribute to stats
+    ]
+    Description! ~ "{{Value}}"
+}
+
+# ---------------------------------------------------------------------------
+# Armor options for fighters
+# ---------------------------------------------------------------------------
+
+SDFighterArmor {
+    ^ [
+        *(x3) SDLeatherArmor
+        *(x3) SDChainmail
+        *(x2) SDPlatemail
+        *(x2) SDLeatherArmorShield
+        *(x2) SDChainmailShield
+               SDPlatemailShield
+    ]
+}
+
+SDLeatherArmor {
+    Name! ~ "Leather"
+    AC! ~ <%{{11 + round((BaseDexterity - 10.5) / 2, 0)}}%>
+}
+
+SDLeatherArmorShield {
+    Name! ~ "Leather + shield"
+    AC! ~ <%{{13 + round((BaseDexterity - 10.5) / 2, 0)}}%>
+}
+
+SDChainmail {
+    Name! ~ "Chainmail"
+    AC! ~ <%{{13 + round((BaseDexterity - 10.5) / 2, 0)}}%>
+}
+
+SDChainmailShield {
+    Name! ~ "Chainmail + shield"
+    AC! ~ <%{{15 + round((BaseDexterity - 10.5) / 2, 0)}}%>
+}
+
+SDPlatemail {
+    Name! ~ "Plate mail"
+    AC! ~ "15"
+}
+
+SDPlatemailShield {
+    Name! ~ "Plate mail + shield"
+    AC! ~ "17"
+}
+
+# ---------------------------------------------------------------------------
+# Fighter base class
+# ---------------------------------------------------------------------------
+
+Fighter (SDNPC) {
+    Race   @ Race
+    Class! = "Fighter"
+
+    Weapon @ SDFighterWeapon {
+        AttackMod = &StrMod
+    }
+
+    Armor  @ SDFighterArmor
+    ArmorValue! ~ "{{Armor.AC}} ({{Armor.Name}})"
+
+    Talent1! @ FighterTalent
+    Talent2! @ FighterTalent
+
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+
+    | SDNPC
+}
+
+# ---------------------------------------------------------------------------
+# Fighter levels 1-10
+# Primary stat STR: 5d3+3 (biased toward 16+)
+# Secondary CON:    4d3+4 (biased toward 14+)
+# Remaining stats:  3d6
+# ---------------------------------------------------------------------------
+
+FighterLevel1 (Fighter) {
+    Level! = 1
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(1d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    | Fighter
+}
+
+FighterLevel2 (Fighter) {
+    Level! = 2
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(2d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    | Fighter
+}
+
+FighterLevel3 (Fighter) {
+    Level! = 3
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(3d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+FighterLevel4 (Fighter) {
+    Level! = 4
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(4d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+FighterLevel5 (Fighter) {
+    Level! = 5
+    BaseStrength     @ 5d3+3
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(5d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}; {{Talent4.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+FighterLevel6 (Fighter) {
+    Level! = 6
+    BaseStrength     @ 5d3+4
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(6d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}; {{Talent4.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+FighterLevel7 (Fighter) {
+    Level! = 7
+    BaseStrength     @ 5d3+4
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(7d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}; {{Talent4.Description}}; {{Talent5.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+FighterLevel8 (Fighter) {
+    Level! = 8
+    BaseStrength     @ 5d3+4
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(8d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}; {{Talent4.Description}}; {{Talent5.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+FighterLevel9 (Fighter) {
+    Level! = 9
+    BaseStrength     @ 5d3+5
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+4
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(9d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    Talent6! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}; {{Talent4.Description}}; {{Talent5.Description}}; {{Talent6.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+FighterLevel10 (Fighter) {
+    Level! = 10
+    BaseStrength     @ 5d3+5
+    BaseDexterity    @ 3d6
+    BaseConstitution @ 4d3+5
+    BaseIntelligence @ 3d6
+    BaseWisdom       @ 3d6
+    BaseCharisma     @ 3d6
+    HitPoints ~ <%{{max(10d8 + round((BaseConstitution - 10.5) / 2, 0) + (2 if Race.class == "RaceDwarf" else 0), 1)}}%>
+    Talent3! @ FighterTalent
+    Talent4! @ FighterTalent
+    Talent5! @ FighterTalent
+    Talent6! @ FighterTalent
+    ClassAbility! ~ <%
+        Weapon Mastery, Grit, Hauler.
+        Talents: {{Talent1.Description}}; {{Talent3.Description}}; {{Talent4.Description}}; {{Talent5.Description}}; {{Talent6.Description}}
+        {%if Race.class == "RaceHuman"%}; {{Talent2.Description}}{%endif%}
+    %>
+    | Fighter
+}
+
+# Test
+main {
+    [6..6 fighters] @@ [
+        * FighterLevel1
+        * FighterLevel2
+        * FighterLevel3
+        * FighterLevel4
+        * FighterLevel8
+        * FighterLevel10
+    ]
+    <html%
+    {% for f in fighters %}
+    <h3>{{f.Description}}</h3>
+    {{f.Stats}}
+    {% endfor %}
+    %html>
+}
