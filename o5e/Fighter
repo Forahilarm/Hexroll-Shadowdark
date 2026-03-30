@@ -1,40 +1,4 @@
-# Shadowdark Fighter for Hexroll 2E
-# ------------------------------------
-# Weapons: All
-# Armor: All + shields
-# HP: 1d8 per level + CON mod at level 1
-# Primary stat: STR (high roll)
-# Secondary stat: CON (good roll)
-# Talent rolls: 2 at level 1 if Human, 1 otherwise
-# New talent at levels 3, 5, 7, 9
-
-+ O5E
-
-# ---------------------------------------------------------------------------
-# Fighter talent table (2d6)
-# ---------------------------------------------------------------------------
-
-FighterTalent {
-    ^ [
-        * Weapon Mastery with one additional weapon type
-        *(x4) +1 to melee and ranged attacks
-        *(x3) +2 to Strength, Dexterity, or Constitution
-        *(x2) +1 AC from chosen armor type
-               Choose a talent or +2 points to distribute to stats
-    ]
-    Description! ~ "{{Value}}"
-}
-
-# ---------------------------------------------------------------------------
-# Armor options for fighters
-# ---------------------------------------------------------------------------
-
-SDFighterArmor {
-    ^ [
-        *(x3) SDLeatherArmor
-        *(x3) SDChainmail
-        *(x2) SDPlatemail
-        *(x2) SDLeatherArmorShield
+https://github.com/Forahilarm/Hexroll-Shadowdark        *(x2) SDLeatherArmorShield
         *(x2) SDChainmailShield
                SDPlatemailShield
     ]
