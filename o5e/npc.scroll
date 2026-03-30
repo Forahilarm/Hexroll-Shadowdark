@@ -1,436 +1,181 @@
-# Hexroll Scroll Model is open-source software released under the terms of the
-# GPL Affero Public License v3.
-#
-# Copyright (C) 2024 Ithai Levi ithai@pendicepaper.com
-#
-# This document contains Open Game Content, subject to the Open Game License,
-# released un the Open Game License, Version 1.0a (enclosed in the LICENSE
-# file), as described in Section 1(d) of the License.
-#
+# Shadowdark NPC for Hexroll 2E
+# --------------------------------
+# Replaces the 5e NPC stat block with Shadowdark format.
+# Stat rolling happens in each class file, not here.
+# Description, appearance, state, and pockets are
+# preserved from the original 5e system unchanged.
 
-NPC5E(Character) {
-  | Character
-  Languages ~ <% {{Race.BaseLanguages}} %>
-  Alignment @ [
-    * Lawful Good
-    * Lawful Neutral
-    * Lawful Evil
-    * Neutral Good
-    * Neutral
-    * Neutral Evil
-    * Chaotic Good
-    * Chaotic Neutral
-    * Chaotic Evil
-  ]
-  Profession! = none
++ O5E
 
-  Appearance! @ [
-    * {{Gender.Feature}}, {{Feature1}} and {%if exists("AppearanceFeature")%}{{AppearanceFeature}}{% else if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
-    * {{Feature1}}, {{Gender.Feature}} and {%if exists("AppearanceFeature")%}{{AppearanceFeature}}{% else if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
-    * {{Gender.Feature}}, {{Feature1}} and {% if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
-    * {{Feature1}}, {{Gender.Feature}} and {% if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
-  ]
+SDNPC (Character) {
+    | Character
 
-  $IndexRef @ IndexedEntity {
-    Render = "Name"
-    Details = <%A level {{Level}} {{Class}}{{maybe2(", the ", Profession)}} {{maybe2("from ",capitalize(SettlementName))}}%>
-    Anchor = &uuid
-    Link = &HostingEntity
-    Type = "location"
-    Full = ""
-    Search = "{{Full}}"
-    Icon = "user"
-  }
+    Race @ Race
 
+    Alignment @ [
+        * Lawful
+        * Neutral
+        * Neutral
+        * Neutral
+        * Chaotic
+    ]
 
-  CalculatedHitPoints! = <%{{max(HitPoints+round((BaseConstitution + Race.ConstitutionBonus - 10.5)/2,0)*Level, 1)}} %>
+    Profession! = none
 
+    Appearance! @ [
+        * {{Gender.Feature}}, {{Feature1}} and {%if exists("AppearanceFeature")%}{{AppearanceFeature}}{% else if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+        * {{Feature1}}, {{Gender.Feature}} and {%if exists("AppearanceFeature")%}{{AppearanceFeature}}{% else if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+        * {{Gender.Feature}}, {{Feature1}} and {% if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+        * {{Feature1}}, {{Gender.Feature}} and {% if existsIn(Race,"Feature") %}{{Race.Feature}}{%else%}{{Feature2}}{%endif%}
+    ]
 
-  Description! ~ <%
-    <strong>{{Name.Full}}</strong>, a level {{Level}} {{Race.Title}} {{Class}}.
-    {{DescriptionInscript}}
-    {{capitalize(Gender.PronounSubject)}} {{Gender.Possession}} {{Appearance}}
-    (<em>{{State}}</em>). {{InThePocket.Details}}
-    {{DescriptionPostscript}}
-  %>
+    $IndexRef @ IndexedEntity {
+        Render = "Name"
+        Details = <%A level {{Level}} {{Race.Title}} {{Class}}{{maybe2(", the ", Profession)}} {{maybe2("from ",capitalize(SettlementName))}}%>
+        Anchor = &uuid
+        Link = &HostingEntity
+        Type = "location"
+        Full = ""
+        Search = "{{Full}}"
+        Icon = "user"
+    }
 
-  SavingThrows ~ <%
-    {% set StrengthModifier = round((BaseStrength + Race.StrengthBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set DexterityModifier = round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set ConstitutionModifier = round((BaseConstitution + Race.ConstitutionBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set WisdomModifier = round((BaseWisdom + Race.WisdomBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set CharismaModifier = round((BaseCharisma + Race.CharismaBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set IntelligenceModifier = round((BaseIntelligence + Race.IntelligenceBonus - 10.5) / 2,0) + ProficiencyBonus %}
+    # Shadowdark modifier formula: round((stat - 10.5) / 2, 0)
+    StrMod! ~ <%{{round((BaseStrength - 10.5) / 2, 0)}}%>
+    DexMod! ~ <%{{round((BaseDexterity - 10.5) / 2, 0)}}%>
+    ConMod! ~ <%{{round((BaseConstitution - 10.5) / 2, 0)}}%>
+    IntMod! ~ <%{{round((BaseIntelligence - 10.5) / 2, 0)}}%>
+    WisMod! ~ <%{{round((BaseWisdom - 10.5) / 2, 0)}}%>
+    ChaMod! ~ <%{{round((BaseCharisma - 10.5) / 2, 0)}}%>
 
-    {% set SavingThrowsResult = "" %}
-    {% if contains(ClassSavingThrows, "Strength") %}
-    {% set SavingThrowsResult = SavingThrowsResult + dice_roller("1d20+"+join(StrengthModifier,""), "Strength "+signed_modifier(StrengthModifier)) %}
-    {% endif %}
-    {% if contains(ClassSavingThrows, "Dexterity") %}
-    {% if SavingThrowsResult != "" %}{% set SavingThrowsResult = SavingThrowsResult + ", " %}{% endif %}
-    {% set SavingThrowsResult = SavingThrowsResult + dice_roller("1d20+"+join(DexterityModifier,""), "Dexterity "+signed_modifier(DexterityModifier)) %}
-    {% endif %}
-    {% if contains(ClassSavingThrows, "Constitution") %}
-    {% if SavingThrowsResult != "" %}{% set SavingThrowsResult = SavingThrowsResult + ", " %}{% endif %}
-    {% set SavingThrowsResult = SavingThrowsResult + dice_roller("1d20+"+join(ConstitutionModifier,""), "Constitution "+signed_modifier(ConstitutionModifier)) %}
-    {% endif %}
-    {% if contains(ClassSavingThrows, "Wisdom") %}
-    {% if SavingThrowsResult != "" %}{% set SavingThrowsResult = SavingThrowsResult + ", " %}{% endif %}
-    {% set SavingThrowsResult = SavingThrowsResult + dice_roller("1d20+"+join(WisdomModifier,""), "Wisdom "+signed_modifier(WisdomModifier)) %}
-    {% endif %}
-    {% if contains(ClassSavingThrows, "Intelligence") %}
-    {% if SavingThrowsResult != "" %}{% set SavingThrowsResult = SavingThrowsResult + ", " %}{% endif %}
-    {% set SavingThrowsResult = SavingThrowsResult + dice_roller("1d20+"+join(IntelligenceModifier,""), "Intelligence "+signed_modifier(IntelligenceModifier)) %}
-    {% endif %}
-    {% if contains(ClassSavingThrows, "Charisma") %}
-    {% if SavingThrowsResult != "" %}{% set SavingThrowsResult = SavingThrowsResult + ", " %}{% endif %}
-    {% set SavingThrowsResult = SavingThrowsResult + dice_roller("1d20+"+join(CharismaModifier,""), "Charisma "+signed_modifier(CharismaModifier)) %}
-    {% endif %}
+    # HP = hit die + CON mod at level 1 (minimum 1)
+    CalculatedHitPoints! ~ <%{{max(HitPoints + round((BaseConstitution - 10.5) / 2, 0), 1)}}%>
 
-    {{SavingThrowsResult}}
-  %>
+    # AC = 10 + DEX mod unarmored, or armor value (set by class)
+    CalculatedAC! ~ <%{{ArmorValue}}%>
 
-  Skills ~ <%
-    {% set StrengthModifier = round((BaseStrength + Race.StrengthBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set DexterityModifier = round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set ConstitutionModifier = round((BaseConstitution + Race.ConstitutionBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set WisdomModifier = round((BaseWisdom + Race.WisdomBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set CharismaModifier = round((BaseCharisma + Race.CharismaBonus - 10.5) / 2,0) + ProficiencyBonus %}
-    {% set IntelligenceModifier = round((BaseIntelligence + Race.IntelligenceBonus - 10.5) / 2,0) + ProficiencyBonus %}
+    Description! ~ <%
+        <strong>{{Name.Full}}</strong>, a level {{Level}} {{Race.Title}} {{Class}}.{{note_button(uuid)}}
+        {{DescriptionInscript}}
+        {{capitalize(Gender.PronounSubject)}} {{Gender.Possession}} {{Appearance}} (<em>{{State}}</em>).
+        {{InThePocket.Details}}
+        {{note_container(uuid)}}
+        {{DescriptionPostscript}}
+    %>
 
-    {% set SkillsList = "" %}
+    Stats! ~ <%
+        {% set StrMod = round((BaseStrength - 10.5) / 2, 0) %}
+        {% set DexMod = round((BaseDexterity - 10.5) / 2, 0) %}
+        {% set ConMod = round((BaseConstitution - 10.5) / 2, 0) %}
+        {% set IntMod = round((BaseIntelligence - 10.5) / 2, 0) %}
+        {% set WisMod = round((BaseWisdom - 10.5) / 2, 0) %}
+        {% set ChaMod = round((BaseCharisma - 10.5) / 2, 0) %}
 
-    {% if exists("Skill1") %}
-
-      {% set Skill1Modifier = 0 %}
-      {% if contains("Athletics", Skill1) %}
-        {% set Skill1Modifier = StrengthModifier %}
-      {% endif %}
-      {% if contains("Acrobatics, Sleight of Hand, Stealth", Skill1) %}
-        {% set Skill1Modifier = DexterityModifier %}
-      {% endif %}
-      {% if contains("Arcana, History, Investigation, Nature, Religion", Skill1) %}
-        {% set Skill1Modifier = IntelligenceModifier %}
-      {% endif %}
-      {% if contains("Animal Handling, Insight, Medicine, Perception, Survival", Skill1) %}
-        {% set Skill1Modifier = WisdomModifier %}
-      {% endif %}
-      {% if contains("Deception, Intimidation, Performance, Persuasion", Skill1) %}
-        {% set Skill1Modifier = CharismaModifier %}
-      {% endif %}
-
-      {% if exists("Skill1ProficiencyMultiplier") %}
-          {% set SkillsList = dice_roller("1d20+"+join(Skill1Modifier + ProficiencyBonus,"") ,Skill1 + " " + signed_modifier(Skill1Modifier + ProficiencyBonus)) %}
-      {% else %}
-          {% set SkillsList = dice_roller("1d20+"+join(Skill1Modifier,"") ,Skill1 + " " + signed_modifier(Skill1Modifier)) %}
-      {% endif %}
-
-    {% endif %}
-
-    {% if exists("Skill2") %}
-
-      {% set Skill2Modifier = 0 %}
-      {% if contains("Athletics", Skill2) %}
-        {% set Skill2Modifier = StrengthModifier %}
-      {% endif %}
-      {% if contains("Acrobatics, Sleight of Hand, Stealth", Skill2) %}
-        {% set Skill2Modifier = DexterityModifier %}
-      {% endif %}
-      {% if contains("Arcana, History, Investigation, Nature, Religion", Skill2) %}
-        {% set Skill2Modifier = IntelligenceModifier %}
-      {% endif %}
-      {% if contains("Animal Handling, Insight, Medicine, Perception, Survival", Skill2) %}
-        {% set Skill2Modifier = WisdomModifier %}
-      {% endif %}
-      {% if contains("Deception, Intimidation, Performance, Persuasion", Skill2) %}
-        {% set Skill2Modifier = CharismaModifier %}
-      {% endif %}
-
-      {% if exists("Skill2ProficiencyMultiplier") %}
-          {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(Skill2Modifier + ProficiencyBonus,"") ,Skill2 + " " + signed_modifier(Skill2Modifier + ProficiencyBonus)) %}
-      {% else %}
-          {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(Skill2Modifier,"") ,Skill2 + " " + signed_modifier(Skill2Modifier)) %}
-      {% endif %}
-
-    {% endif %}
-
-    {% if exists("Skill3") %}
-
-      {% set Skill3Modifier = 0 %}
-      {% if contains("Athletics", Skill3) %}
-        {% set Skill3Modifier = StrengthModifier %}
-      {% endif %}
-      {% if contains("Acrobatics, Sleight of Hand, Stealth", Skill3) %}
-        {% set Skill3Modifier = DexterityModifier %}
-      {% endif %}
-      {% if contains("Arcana, History, Investigation, Nature, Religion", Skill3) %}
-        {% set Skill3Modifier = IntelligenceModifier %}
-      {% endif %}
-      {% if contains("Animal Handling, Insight, Medicine, Perception, Survival", Skill3) %}
-        {% set Skill3Modifier = WisdomModifier %}
-      {% endif %}
-      {% if contains("Deception, Intimidation, Performance, Persuasion", Skill3) %}
-        {% set Skill3Modifier = CharismaModifier %}
-      {% endif %}
-
-      {% if exists("Skill3ProficiencyMultiplier") %}
-          {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(Skill3Modifier + ProficiencyBonus,"") ,Skill3 + " " + signed_modifier(Skill3Modifier + ProficiencyBonus)) %}
-      {% else %}
-          {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(Skill3Modifier,"") ,Skill3 + " " + signed_modifier(Skill3Modifier)) %}
-      {% endif %}
-
-    {% endif %}
-
-    {% if exists("Skill4") %}
-
-      {% set Skill4Modifier = 0 %}
-      {% if contains("Athletics", Skill4) %}
-        {% set Skill4Modifier = StrengthModifier %}
-      {% endif %}
-      {% if contains("Acrobatics, Sleight of Hand, Stealth", Skill4) %}
-        {% set Skill4Modifier = DexterityModifier %}
-      {% endif %}
-      {% if contains("Arcana, History, Investigation, Nature, Religion", Skill4) %}
-        {% set Skill4Modifier = IntelligenceModifier %}
-      {% endif %}
-      {% if contains("Animal Handling, Insight, Medicine, Perception, Survival", Skill4) %}
-        {% set Skill4Modifier = WisdomModifier %}
-      {% endif %}
-      {% if contains("Deception, Intimidation, Performance, Persuasion", Skill4) %}
-        {% set Skill4Modifier = CharismaModifier %}
-      {% endif %}
-
-      {% if exists("Skill4ProficiencyMultiplier") %}
-          {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(Skill4Modifier + ProficiencyBonus,"") ,Skill4 + " " + signed_modifier(Skill4Modifier + ProficiencyBonus)) %}
-      {% else %}
-          {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(Skill4Modifier,"") ,Skill4 + " " + signed_modifier(Skill4Modifier)) %}
-      {% endif %}
-
-    {% endif %}
-
-    {% if Race.class == "RaceElf" and not contains(SkillsList, "Perception") %}
-      {% set SkillModifier = WisdomModifier %}
-      {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(SkillModifier,""),"Perception" + " " + signed_modifier(SkillModifier)) %}
-    {% endif %}
-
-    {% if Race.class == "RaceHalfOrc" and not contains(SkillsList, "Intimidation") %}
-      {% set SkillModifier = CharismaModifier %}
-      {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(SkillModifier,""),"Intimidation" + " " + signed_modifier(SkillModifier)) %}
-    {% endif %}
-
-    {% if Race.class == "RaceHalfElf" %}
-
-      {% set ExtraSkill1Modifier = 0 %}
-      {% if contains("Athletics", ExtraSkill1) %}
-        {% set ExtraSkill1Modifier = StrengthModifier %}
-      {% endif %}
-      {% if contains("Acrobatics, Sleight of Hand, Stealth", ExtraSkill1) %}
-        {% set ExtraSkill1Modifier = DexterityModifier %}
-      {% endif %}
-      {% if contains("Arcana, History, Investigation, Nature, Religion", ExtraSkill1) %}
-        {% set ExtraSkill1Modifier = IntelligenceModifier %}
-      {% endif %}
-      {% if contains("Animal Handling, Insight, Medicine, Perception, Survival", ExtraSkill1) %}
-        {% set ExtraSkill1Modifier = WisdomModifier %}
-      {% endif %}
-      {% if contains("Deception, Intimidation, Performance, Persuasion", ExtraSkill1) %}
-        {% set ExtraSkill1Modifier = CharismaModifier %}
-      {% endif %}
-      {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(ExtraSkill1Modifier,""),ExtraSkill1 + " " + signed_modifier(ExtraSkill1Modifier)) %}
-
-      {% set ExtraSkill2Modifier = 0 %}
-      {% if contains("Athletics", ExtraSkill2) %}
-        {% set ExtraSkill2Modifier = StrengthModifier %}
-      {% endif %}
-      {% if contains("Acrobatics, Sleight of Hand, Stealth", ExtraSkill2) %}
-        {% set ExtraSkill2Modifier = DexterityModifier %}
-      {% endif %}
-      {% if contains("Arcana, History, Investigation, Nature, Religion", ExtraSkill2) %}
-        {% set ExtraSkill2Modifier = IntelligenceModifier %}
-      {% endif %}
-      {% if contains("Animal Handling, Insight, Medicine, Perception, Survival", ExtraSkill2) %}
-        {% set ExtraSkill2Modifier = WisdomModifier %}
-      {% endif %}
-      {% if contains("Deception, Intimidation, Performance, Persuasion", ExtraSkill2) %}
-        {% set ExtraSkill2Modifier = CharismaModifier %}
-      {% endif %}
-      {% set SkillsList = SkillsList + ", " + dice_roller("1d20+"+join(ExtraSkill2Modifier,""),ExtraSkill2 + " " + signed_modifier(ExtraSkill2Modifier)) %}
-
-    {% endif %}
-
-    {{SkillsList}}
-  %>
-
-
-
-
-  Senses ~ <%
-    {% if existsIn(Race, "Senses") %}
-    {{Race.Senses}}
-    {% endif %}
-  %>
-
-  Stats! ~ <%
-    {% set Strength = 0 %}
-    {% set Dexterity = 0 %}
-    {% set Constitution = 0 %}
-    {% set Wisdom = 0 %}
-    {% set Intelligence = 0 %}
-    {% set Charisma = 0 %}
-    {% set Strength = BaseStrength + Race.StrengthBonus%}
-    {% set Dexterity = BaseDexterity + Race.DexterityBonus %}
-    {% set Constitution = BaseConstitution + Race.ConstitutionBonus %}
-    {% set Intelligence = BaseIntelligence + Race.IntelligenceBonus %}
-    {% set Wisdom = BaseWisdom + Race.WisdomBonus %}
-    {% set Charisma = BaseCharisma + Race.CharismaBonus %}
-
-    {% set StrengthModifier = round((Strength - 10.5) / 2,0) %}
-    {% set DexterityModifier = round((Dexterity - 10.5) / 2,0) %}
-    {% set ConstitutionModifier = round((Constitution - 10.5) / 2,0) %}
-    {% set WisdomModifier = round((Wisdom - 10.5) / 2,0) %}
-    {% set CharismaModifier = round((Charisma - 10.5) / 2,0) %}
-    {% set IntelligenceModifier = round((Intelligence - 10.5) / 2,0) %}
-
-
-    <div id="block-{{uuid}}" class="monster-block">
+        <div id="block-{{uuid}}" class="monster-block">
         <div class="statblock">
-            <hr/>
-            <div class="statblock-top-row">
-                <div><span class="section-label">Level:</span> {{Level}} </div>
-                <div><span class="section-label">Proficiency:</span> +{{ProficiencyBonus}}</div>
-                <div><span class="section-label">AC:</span> {{Armor}}</div>
-                <div><span class="section-label">HP:</span> {{CalculatedHitPoints}} </div>
-                <div><span class="section-label">Speed:</span> {{Race.BaseWalkingSpeed}}</div>
-            </div>
-            <table class="statblock-table">
-                <tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr>
-                <tr>
-                <td>{{Strength}} <small> {{signed_modifier(StrengthModifier)}} </small> </td>
-                <td>{{Dexterity}} <small> {{signed_modifier(DexterityModifier)}} </small> </td>
-                <td>{{Constitution}} <small> {{signed_modifier(ConstitutionModifier)}} </small> </td>
-                <td>{{Intelligence}} <small> {{signed_modifier(IntelligenceModifier)}} </small> </td>
-                <td>{{Wisdom}} <small> {{signed_modifier(WisdomModifier)}} </small> </td>
-                <td>{{Charisma}} <small> {{signed_modifier(CharismaModifier)}} </small> </td>
-                </tr>
-            </table>
-            <div>
-            <input class="monster-block-toggle" name="toggle-{{uuid}}" id="toggle-{{uuid}}" type="checkbox" onclick="javascript:document.getElementById('block-{{uuid}}').scrollIntoView();"/>
+        <hr/>
+        <div class="statblock-top-row">
+            <div><span class="section-label">LV:</span> {{Level}}</div>
+            <div><span class="section-label">AC:</span> {{CalculatedAC}}</div>
+            <div><span class="section-label">HP:</span> {{CalculatedHitPoints}}</div>
+            <div><span class="section-label">MV:</span> {{Race.BaseWalkingSpeed}}</div>
+        </div>
+        <table class="statblock-table">
+            <tr><th>S</th><th>D</th><th>C</th><th>I</th><th>W</th><th>Ch</th></tr>
+            <tr>
+                <td>{{signed_modifier(StrMod)}}</td>
+                <td>{{signed_modifier(DexMod)}}</td>
+                <td>{{signed_modifier(ConMod)}}</td>
+                <td>{{signed_modifier(IntMod)}}</td>
+                <td>{{signed_modifier(WisMod)}}</td>
+                <td>{{signed_modifier(ChaMod)}}</td>
+            </tr>
+        </table>
+        <div>
+            <input class="monster-block-toggle" name="toggle-{{uuid}}" id="toggle-{{uuid}}" type="checkbox"
+                onclick="javascript:document.getElementById('block-{{uuid}}').scrollIntoView();"/>
             <div id="block-toggle-{{uuid}}" class="statblock-container">
                 <ul>
-                {% if SavingThrows != "" %}
-                <li><strong>Saving Throws: </strong> {{SavingThrows}}</li>
-                {% endif %}
-                {% if Skills != "" %}
-                <li><strong>Skills: </strong> {{Skills}}</li>
-                {% endif %}
-                {% if Senses != "" %}
-                <li><strong>Senses: </strong> {{Senses}}</li>
-                {% endif %}
-                {% if DamageImmunities != "" %}
-                <li><strong>Immunities: </strong> {{DamageImmunities}}</li>
-                {% endif %}
-                <li><strong>Alignment: </strong> {{Alignment}}</li>
-                {% if Languages != "" %}
-                <li><strong>Languages: </strong> {{Languages}}</li>
-                {% endif %}
+                    <li><strong>ATK:</strong> {{Weapon.Stats}}</li>
+                    <li><strong>AL:</strong> {{Alignment}}</li>
+                    {% if Languages != "" %}
+                    <li><strong>Languages:</strong> {{Languages}}</li>
+                    {% endif %}
+                    {% if Race.RacialTraits != "" %}
+                    <li><strong>{{Race.Title}}:</strong> {{Race.RacialTraits}}</li>
+                    {% endif %}
+                    {% if exists("ClassAbility") %}
+                    <li><strong>{{Class}}:</strong> {{ClassAbility}}</li>
+                    {% endif %}
                 </ul>
-                {% if exists("Traits") %}
-                <hr/>
-                <div>{{Traits}}</div>
-                {% endif %}
-                <ul>
-                <hr/>
-                {% if Race.RacialTraits != "" %}
-                <li><strong>{{Race.Title}}: </strong> {{Race.RacialTraits}}</li>
-                {% endif %}
-                {% if exists("ClassSpecificStats") %} {{ClassSpecificStats}} {% endif %}
-                </ul>
-                {% if exists("Actions") or exists("Spells") or exists("Cantrips") or exists("Weapon") %}
-                <hr/>
-                <h6>Actions</h6>
-                <ul>
-                {% if exists("Spells") %}
-                <li><strong>Spellcasting:</strong> {{Spells}}</li>
-                {% endif %}
-                {% if exists("Cantrips") %}
-                <li>{{Cantrips}}</li>
-                {% endif %}
-                <li> {{Weapon.Stats}} {%if exists("WeaponActionExtension")%}{{WeaponActionExtension}}{%endif%}</li>
-                {% if existsIn(Race, "Actions") %}
-                  {{Race.Actions}}
-                {% endif %}
-                  {{OtherClassActions}}
-                </ul>
-                {% endif %}
-            </div>
             </div>
         </div>
-    </div>
+        </div>
+        </div>
+    %>
 
-  %>
-
+    Languages ~ <% {{Race.BaseLanguages}} %>
 }
 
-TavernVisitor (NPC5E) { ^ [
-    * DruidLevel1
-    * DruidLevel2
-    * DruidLevel3
-    * DruidLevel4
-    * DruidLevel5
-    * DruidLevel6
-    * DruidLevel7
-    * DruidLevel8
-    * RogueLevel1
-    * RogueLevel2
-    * RogueLevel3
-    * RogueLevel4
-    * RogueLevel5
-    * RogueLevel6
-    * RogueLevel7
-    * RogueLevel8
-    * FighterLevel1
-    * FighterLevel2
-    * FighterLevel3
-    * FighterLevel4
-    * FighterLevel5
-    * FighterLevel6
-    * FighterLevel7
-    * FighterLevel8
-    * WizardLevel1
-    * WizardLevel2
-    * WizardLevel3
-    * WizardLevel4
-    * WizardLevel5
-    * WizardLevel6
-    * WizardLevel7
-    * WizardLevel8
-    * ClericLevel1
-    * ClericLevel2
-    * ClericLevel3
-    * ClericLevel4
-    * ClericLevel5
-    * ClericLevel6
-    * ClericLevel7
-    * ClericLevel8
-  ]
+TavernVisitor (SDNPC) {
+    ^ [
+        *(x10) FighterLevel1
+        *(x8)  FighterLevel2
+        *(x6)  FighterLevel3
+        *(x4)  FighterLevel4
+        *(x2)  FighterLevel5
+        *(x2)  FighterLevel6
+        *(x2)  FighterLevel7
+               FighterLevel8
+               FighterLevel9
+               FighterLevel10
+        *(x10) ThiefLevel1
+        *(x8)  ThiefLevel2
+        *(x6)  ThiefLevel3
+        *(x4)  ThiefLevel4
+        *(x2)  ThiefLevel5
+        *(x2)  ThiefLevel6
+        *(x2)  ThiefLevel7
+               ThiefLevel8
+               ThiefLevel9
+               ThiefLevel10
+        *(x10) PriestLevel1
+        *(x8)  PriestLevel2
+        *(x6)  PriestLevel3
+        *(x4)  PriestLevel4
+        *(x2)  PriestLevel5
+        *(x2)  PriestLevel6
+        *(x2)  PriestLevel7
+               PriestLevel8
+               PriestLevel9
+               PriestLevel10
+        *(x10) WizardLevel1
+        *(x8)  WizardLevel2
+        *(x6)  WizardLevel3
+        *(x4)  WizardLevel4
+        *(x2)  WizardLevel5
+        *(x2)  WizardLevel6
+        *(x2)  WizardLevel7
+               WizardLevel8
+               WizardLevel9
+               WizardLevel10
+    ]
 }
 
-
-AllArmors = [
-    * {{11+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Padded)
-    * {{11+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Leather)
-    * {{12+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Studded Leather)
-    * {{12+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Hide)
-    * {{13+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Chain shirt)
-    * {{14+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Scale mail)
-    * {{14+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Breastplate)
-    * {{15+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Half plate)
-    * {{1+11+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Padded, Wooden shield)
-    * {{1+11+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Leather, Wooden shield)
-    * {{1+12+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Studded Leather, Wooden shield)
-    * {{1+12+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Hide, Wooden shield)
-    * {{1+13+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Chain shirt, Wooden shield)
-    * {{1+14+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Scale mail, Wooden shield)
-    * {{1+14+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Breastplate, Wooden shield)
-    * {{1+15+round((BaseDexterity + Race.DexterityBonus - 10.5) / 2,0)}} (Half plate, Wooden shield)
-]
+# Test
+main {
+    [6..6 npcs] @@ [
+        * FighterLevel1
+        * FighterLevel2
+        * ThiefLevel1
+        * WizardLevel1
+        * PriestLevel1
+        * FighterLevel3
+    ]
+    <html%
+    {% for npc in npcs %}
+    <h3>{{npc.Description}}</h3>
+    {{npc.Stats}}
+    {% endfor %}
+    %html>
+}
