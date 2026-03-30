@@ -1,300 +1,135 @@
-RaceHuman {
-  Title! = "Human"
-  StrengthBonus! = 1
-  DexterityBonus! = 1
-  ConstitutionBonus! = 1
-  IntelligenceBonus! = 1
-  WisdomBonus! = 1
-  CharismaBonus! = 1
-  BaseWalkingSpeed! = 30
-  Darkvision = False
-  RacialTraits! = ""
-  WeaponProficiencies! = ""
-  BaseLanguages! = "Common"
-}
+# Shadowdark Races for Hexroll 2E
+# ----------------------------------
+# Ancestries sourced directly from Shadowdark RPG.
 
-RaceHalfOrc {
-  Title! = "Half-Orc"
-  StrengthBonus! = 2
-  DexterityBonus! = 0
-  ConstitutionBonus! = 1
-  IntelligenceBonus! = 0
-  WisdomBonus! = 0
-  CharismaBonus! = 0
-  BaseWalkingSpeed! = 30
-  Darkvision = True
-  RacialTraits! = "Darkvision, Menacing, Relentless Endurance, Savage Attacks"
-  Senses! = "Darkvision 60 ft."
-  WeaponProficiencies! = ""
-  BaseLanguages! = "Common, Orc"
-  Feature! @ [
-    * a strong, muscular physique
-    * a deep scar on the right arm
-    * a broken nose
-    * a big nose-ring
-    * a strong, angular jaw
-    * a greenish-gray skin
-    * sharp, tusk-like teeth
-    * prominent brows
-    * a heaby, muscular build
-    * scars across the arms
-    * tribal tattoos on the arms
-    * a wide, flat nose
-    * a broad, flat nose
-  ]
++ O5E
+
+RaceHuman {
+    Title! = "Human"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Ambitious: gain one additional talent roll at 1st level"
+    BaseLanguages! = "Common, one additional common language"
+    Feature! @ [
+        * a weathered, road-worn look
+        * a collection of mismatched scars
+        * an unusual signet ring
+        * strikingly average features that are somehow hard to place
+        * a permanent squint from too many years in the sun
+    ]
 }
 
 RaceDwarf {
-  Title! = "Dwarf"
-  StrengthBonus! = 0
-  DexterityBonus! = 0
-  ConstitutionBonus! = 2
-  IntelligenceBonus! = 0
-  WisdomBonus! = 1
-  CharismaBonus! = 0
-  BaseWalkingSpeed! = 25
-  Darkvision = True
-  RacialTraits! = "Darkvision, Dwarven Resilience, Dwarven Combat Training, Tool Proficiency, Stonecunning"
-  Senses! = "Darkvision 60 ft."
-  WeaponProficiencies! = "Battleaxe, Handaxe, Light Hammer, Warhammer"
-  BaseLanguages! = "Common, Dwarvish"
-  Feature! @ [
-    * big, bulbous nose
-    * short, fat fingers
-    * a golden tooth
-    * big red cheeks
-    * chubby cheeks
-  ]
+    Title! = "Dwarf"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Stout: start with +2 HP, roll hit points per level with advantage"
+    BaseLanguages! = "Common, Dwarvish"
+    Feature! @ [
+        * big, bulbous nose
+        * short, fat fingers
+        * a golden tooth
+        * big red cheeks
+        * chubby cheeks
+    ]
 }
 
 RaceElf {
-  Title! = "Elf"
-  StrengthBonus! = 0
-  DexterityBonus! = 2
-  ConstitutionBonus! = 0
-  IntelligenceBonus! = 0
-  WisdomBonus! = 0
-  CharismaBonus! = 0
-  BaseWalkingSpeed! = 30
-  Darkvision = True
-  RacialTraits! = "Darkvision, Keen Senses, Fey Ancestry, Trance"
-  Senses! = "Darkvision 60 ft."
-  WeaponProficiencies! = ""
-  BaseLanguages! = "Common, Elvish"
-  Feature! @ [
-    * long, pointy ears
-    * long, skinny fingers
-    * a sigil tattooed on the neck
-    * a nose ring
-    * silky light skin
-    * silky dark skin
-    * a delicate angular face
-    * a slender, graceful build
-  ]
+    Title! = "Elf"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Farsight: +1 bonus to attack rolls with ranged weapons or +1 bonus to spellcasting checks"
+    BaseLanguages! = "Common, Elvish, Sylvan"
+    Feature! @ [
+        * long, pointy ears
+        * long, skinny fingers
+        * a sigil tattooed on the neck
+        * a nose ring
+        * silky light skin
+        * silky dark skin
+        * a delicate angular face
+        * a slender, graceful build
+    ]
 }
 
 RaceHalfling {
-  Title! = "Halfling"
-  StrengthBonus! = 0
-  DexterityBonus! = 2
-  ConstitutionBonus! = 0
-  IntelligenceBonus! = 0
-  WisdomBonus! = 0
-  CharismaBonus! = 0
-  BaseWalkingSpeed! = 25
-  Darkvision = False
-  RacialTraits! = "Lucky, Brave, Halfling Nimbleness"
-  WeaponProficiencies! = "Battleaxe, Handaxe, LightHammer, Warhammer"
-  BaseLanguages! = "Common, Halfling"
-  Feature! @ [
-    * short, chunky fingers
-    * extremely large feet, even for a halfling
-    * round, bulbous nose
-    * chubby cheeks
-    * big red cheeks
-    * bushy eyebrows
-    * a patterned coat
-    * a vibrant coat
-    * oversized suspenders
-  ]
+    Title! = "Halfling"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Stealthy: once per day, become invisible for 3 rounds"
+    BaseLanguages! = "Common"
+    Feature! @ [
+        * short, chunky fingers
+        * extremely large feet, even for a halfling
+        * round, bulbous nose
+        * chubby cheeks
+        * big red cheeks
+        * bushy eyebrows
+        * a patterned coat
+        * a vibrant coat
+        * oversized suspenders
+    ]
 }
 
-
-DragonbornAncestry {
-  ^ [
-    * DragonbornSilverAncestry
-    * DragonbornBlackAncestry
-    * DragonbornBlueAncestry
-    * DragonbornBrassAncestry
-    * DragonbornBronzeAncestry
-    * DragonbornCopperAncestry
-    * DragonbornGoldAncestry
-    * DragonbornGreenAncestry
-    * DragonbornRedAncestry
-    * DragonbornSilverAncestry
-    * DragonbornWhiteAncestry
-]}
-
-DragonbornSilverAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Silver Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Cold, 5 by 30 ft, Con save </li> %>
+RaceHalfOrc {
+    Title! = "Half-Orc"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Mighty: +1 bonus to attack and damage rolls with melee weapons"
+    BaseLanguages! = "Common, Orcish"
+    Feature! @ [
+        * a strong, muscular physique
+        * a deep scar on the right arm
+        * a broken nose
+        * a big nose-ring
+        * a strong, angular jaw
+        * a greenish-gray skin
+        * sharp, tusk-like teeth
+        * prominent brows
+        * a heavy, muscular build
+        * scars across the arms
+        * tribal tattoos on the arms
+        * a wide, flat nose
+        * a broad, flat nose
+    ]
 }
 
-DragonbornBlackAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Black Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Acid, 5 by 30 ft, Dex save </li> %>
+RaceGoblin {
+    Title! = "Goblin"
+    BaseWalkingSpeed! = Near
+    RacialTraits! = "Keen Senses: you can't be surprised"
+    BaseLanguages! = "Common, Goblin"
+    Feature! @ [
+        * enormous bat-like ears
+        * bright yellow eyes and mottled green skin
+        * a wide gap-toothed grin
+        * small but surprisingly nimble hands
+        * a collection of shiny trinkets sewn into clothing
+        * a flat, wide nose
+        * sharp, beady eyes
+    ]
 }
-
-DragonbornBlueAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Blue Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Lightning, 5 by 30 ft, Dex save </li> %>
-}
-
-DragonbornBrassAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Brass Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Fire, 5 by 30 ft, Dex save </li> %>
-}
-
-DragonbornBronzeAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Bronze Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Lightning, 5 by 30 ft, Dex save </li> %>
-}
-
-DragonbornCopperAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Copper Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Acid, 5 by 30 ft, Dex save </li> %>
-}
-
-DragonbornGoldAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Gold Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Fire, 5 by 30 ft, Dex save </li> %>
-}
-
-DragonbornGreenAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Green Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Poison, 5 by 30 ft, Con save </li> %>
-}
-
-DragonbornRedAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Red Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Fire, 5 by 30 ft, Dex save </li> %>
-}
-
-DragonbornSilverAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (Silver Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Cold, 5 by 30 ft, Con save </li> %>
-}
-
-DragonbornWhiteAncestry(DragonbornAncestry) {
-  Ancestry! ~ <% Draconic Ancestry (White Dragon) %>
-  Action! ~ <% <li> <strong>Breath Weapon</strong>: Cold, 5 by 30 ft, Con save </li> %>
-}
-
-RaceDragonborn {
-  Title! = "Dragonborn"
-  StrengthBonus! = 2
-  DexterityBonus! = 0
-  ConstitutionBonus! = 0
-  IntelligenceBonus! = 0
-  WisdomBonus! = 0
-  CharismaBonus! = 1
-  BaseWalkingSpeed! = 30
-  Darkvision = False
-  DraconicAncestry @ DragonbornAncestry
-  RacialTraits! ~ "{{DraconicAncestry.Ancestry}}, Damage Resistance"
-  Actions! ~ "{{DraconicAncestry.Action}}"
-  WeaponProficiencies! = "Battleaxe, Handaxe, LightHammer, Warhammer"
-  BaseLanguages! = "Common, Draconic"
-  Feature! @ [
-    * a scaly, colorful skin
-    * pearly scales
-    * an elongated snout
-    * a muscular, powerful build
-    * a fierce reptilian forehead
-    * a horned crest
-    * a colorful scaly skin
-    * sharp and worn claws
-    * spiked frills along the head
-    * a pair of protruding horns
-  ]
-}
-
-RaceGnome {
-  Title! = "Gnome"
-  StrengthBonus! = 0
-  DexterityBonus! = 0
-  ConstitutionBonus! = 1
-  IntelligenceBonus! = 2
-  WisdomBonus! = 0
-  CharismaBonus! = 0
-  BaseWalkingSpeed! = 25
-  Darkvision = True
-  RacialTraits! = "Darkvision, Gnome Cunning, Artificer's Lore, Speak with Small Beasts"
-  Senses! = "Darkvision 60 ft."
-  WeaponProficiencies! = "Battleaxe, Handaxe, LightHammer, Warhammer"
-  BaseLanguages! = "Common, Gnomish"
-  Feature! @ [
-      * bright, colorful clothing
-      * large, round glasses
-      * an intricately patterned vest
-      * a bushy beard
-      * an oversized goggles
-      * a pointy, decorated hat
-      * seemingly dexterous hands
-      * a whimsical earring made of gears
-      * oversized round glasses
-      * colorful, patchwork clothing
-      * a pointed, slightly upturned hat
-      * a button-like nose
-      * oversized round glasses
-  ]
-}
-
-RaceHalfElf {
-  Title! = "Half-Elf"
-  StrengthBonus! = 0
-  DexterityBonus! = 2
-  ConstitutionBonus! = 0
-  IntelligenceBonus! = 0
-  WisdomBonus! = 0
-  CharismaBonus! = 2
-  BaseWalkingSpeed! = 30
-  Darkvision = True
-  RacialTraits! = "Fey Ancestry, Skill Versatility"
-  WeaponProficiencies! = "Battleaxe, Handaxe, LightHammer, Warhammer"
-  BaseLanguages! = "Common, Elvish, One additional language"
-}
-
-RaceTiefling {
-  Title! = "Tiefling"
-  StrengthBonus! = 0
-  DexterityBonus! = 0
-  ConstitutionBonus! = 1
-  IntelligenceBonus! = 2
-  WisdomBonus! = 0
-  CharismaBonus! = 0
-  BaseWalkingSpeed! = 30
-  Darkvision = True
-  RacialTraits! = "Darkvision, Hellish Resistance, Infernal Legacy"
-  WeaponProficiencies! = "Battleaxe, Handaxe, LightHammer, Warhammer"
-  BaseLanguages! = "Common, Infernal"
-  Feature! @ [
-    * curling red horns
-    * a crimson-toned skin
-    * an intricate face tattoo
-    * elongated ears
-    * a horned forehead
-    * a dark, textured skin
-  ]
-}
-
 
 Race {
-  ^ [
-    * RaceHuman
-    * RaceDwarf
-    * RaceElf
-    * RaceHalfling
-    * RaceHalfElf
-  ]
+    ^ [
+        * RaceHuman
+        * RaceDwarf
+        * RaceElf
+        * RaceHalfling
+        * RaceHalfOrc
+        * RaceGoblin
+    ]
+}
+
+# Test
+main {
+    [6..6 npcs] @@ [
+        * FighterLevel1
+        * FighterLevel2
+        * ThiefLevel1
+        * WizardLevel1
+        * PriestLevel1
+        * FighterLevel3
+    ]
+    <html%
+    {% for npc in npcs %}
+    <h3>{{npc.Description}}</h3>
+    {{npc.Stats}}
+    {% endfor %}
+    %html>
 }
