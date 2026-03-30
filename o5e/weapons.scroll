@@ -1,312 +1,159 @@
-ExWeapon {
-  ^ [
-    * NpcWeaponScimitar
-    * NpcWeaponClub
-    * NpcWeaponDagger
-    * NpcWeaponGreatclub
-    * NpcWeaponHandaxe
-    * NpcWeaponJavelin
-    * NpcWeaponLightHammer
-    * NpcWeaponMace
-    * NpcWeaponQuarterstaff
-    * NpcWeaponSickle
-    * NpcWeaponSpear
-    * NpcWeaponLightCrossbow
-    * NpcWeaponDart
-    * NpcWeaponShortbow
-    * NpcWeaponSling
-    * NpcWeaponBattleaxe
-    * NpcWeaponFlail
-    * NpcWeaponGlaive
-    * NpcWeaponLongsword
-    * NpcWeaponPike
-    * NpcWeaponRapier
-    * NpcWeaponShortsword
-    * NpcWeaponTrident
-    * NpcWeaponWarpick
-    * NpcWeaponWhip
-    * NpcWeaponNet
-  ]
+# Shadowdark Weapons for Hexroll 2E
+# ------------------------------------
+# Melee and ranged weapons from the Shadowdark RPG.
+# AttackMod is set by the class using the relevant stat modifier.
 
-  Stats! ~ <% <strong>{{WeaponName}} {%if WeaponBonus>0 %}(+{{WeaponBonus}}){%endif%}</strong> {%set AttackRoll="+0"%}{%if ActualBonus>=0%}{%set AttackRoll="+"+ActualBonus%}{%else%}{%set AttackRoll=""+ActualBonus%}{%endif%} {{dice_roller("1d20"+AttackRoll, AttackRoll)}} to hit {{WeaponRange}} one target. Inflicts {{dice_roller(CalcedDamage,CalcedDamage)}} {{DamageType}} damage. %>
++ O5E
+
+SDWeapon {
+    WeaponName! :: STRING
+    DamageRoll! :: STRING
+    WeaponRange! :: STRING
+    AttackMod = 0
+    Stats! ~ <%
+        <strong>{{WeaponName}}</strong>
+        {%if AttackMod >= 0%}+{{AttackMod}}{%else%}{{AttackMod}}{%endif%}
+        ({{DamageRoll}})
+    %>
 }
 
-MeleeWeapon(ExWeapon) {
-  ClassWeaponProficiencies = ""
-  ProficiencyBonus = 0
-  BaseStrength = 0
-  MeleeBonus = 0
-  ActualBonus ~ <%{% set WeaponProficiencyBonus = 0 %} {%if contains(Race.WeaponProficiencies, WeaponName) or contains(ClassWeaponProficiencies, WeaponName) %}{% set WeaponProficiencyBonus = ProficiencyBonus %}{%endif%}{{signed_modifier(round((must_be_int(BaseStrength) + Race.StrengthBonus - 10.5) / 2,0) + WeaponProficiencyBonus + MeleeBonus + WeaponBonus)}} %>
-  CalcedDamage ~ <%{{DamageRoll}}{{signed_modifier(round((must_be_int(BaseStrength) + Race.StrengthBonus - 10.5) / 2,0) + WeaponBonus)}}%>
-  | ExWeapon
+# ---------------------------------------------------------------------------
+# Melee weapons
+# ---------------------------------------------------------------------------
+
+SDBastardSword (SDWeapon) {
+    WeaponName! ~ "Bastard sword"
+    DamageRoll! ~ "1d8"
+    WeaponRange! ~ "close"
 }
 
-RangedWeapon(ExWeapon) {
-  ClassWeaponProficiencies = ""
-  ProficiencyBonus = 0
-  BaseDexterity = 0
-  RangedBonus = 0
-  ActualBonus ~ <%{% set WeaponProficiencyBonus = 0 %} {%if contains(Race.WeaponProficiencies, WeaponName) or contains(ClassWeaponProficiencies, WeaponName)%}{% set WeaponProficiencyBonus = ProficiencyBonus %}{%endif%}{{signed_modifier(round((must_be_int(BaseDexterity) + Race.DexterityBonus - 10.5) / 2,0) + WeaponProficiencyBonus + RangedBonus + WeaponBonus)}} %>
-  CalcedDamage ~ <%{{DamageRoll}}+{{round((must_be_int(BaseDexterity) + Race.DexterityBonus - 10.5) / 2,0) + WeaponBonus}}%>
-  | ExWeapon
+SDClub (SDWeapon) {
+    WeaponName! ~ "Club"
+    DamageRoll! ~ "1d4"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponScimitar(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Scimitar"
-  WeaponType = "Finesse, light"
-  WeaponRange = ""
-  DamageType ~ "slashing"
-  DamageRoll = "1d6"
-  | MeleeWeapon
+SDDagger (SDWeapon) {
+    WeaponName! ~ "Dagger"
+    DamageRoll! ~ "1d4"
+    WeaponRange! ~ "close/near"
 }
 
-NpcWeaponClub(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Club"
-  WeaponType = "Simple, melee"
-  WeaponRange = ""
-  DamageType ~ "bludgeoning"
-  DamageRoll = "1d4"
-  | MeleeWeapon
+SDGreataxe (SDWeapon) {
+    WeaponName! ~ "Greataxe"
+    DamageRoll! ~ "1d8"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponDagger(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Dagger"
-  WeaponType = "Finesse, light, thrown"
-  WeaponRange = "range 20/60"
-  DamageType ~ "piercing"
-  DamageRoll = "1d4"
-  | MeleeWeapon
+SDGreatsword (SDWeapon) {
+    WeaponName! ~ "Greatsword"
+    DamageRoll! ~ "1d12"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponGreatclub(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Greatclub"
-  WeaponType = "Simple, two-handed"
-  WeaponRange = ""
-  DamageType ~ "bludgeoning"
-  DamageRoll = "1d8"
-  | MeleeWeapon
+SDJavelin (SDWeapon) {
+    WeaponName! ~ "Javelin"
+    DamageRoll! ~ "1d4"
+    WeaponRange! ~ "close/far"
 }
 
-NpcWeaponHandaxe(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Handaxe"
-  WeaponType = "Simple, thrown"
-  WeaponRange = "range 20/60"
-  DamageType ~ "slashing"
-  DamageRoll = "1d6"
-  | MeleeWeapon
+SDLongsword (SDWeapon) {
+    WeaponName! ~ "Longsword"
+    DamageRoll! ~ "1d8"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponJavelin(RangedWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Javelin"
-  WeaponType = "Simple, thrown"
-  WeaponRange = "range 30/120"
-  DamageType ~ "piercing"
-  DamageRoll = "1d6"
-  | RangedWeapon
+SDMace (SDWeapon) {
+    WeaponName! ~ "Mace"
+    DamageRoll! ~ "1d6"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponLightHammer(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Light Hammer"
-  WeaponType = "Simple, thrown"
-  WeaponRange = "range 20/60"
-  DamageType ~ "bludgeoning"
-  DamageRoll = "1d4"
-  | MeleeWeapon
+SDShortsword (SDWeapon) {
+    WeaponName! ~ "Shortsword"
+    DamageRoll! ~ "1d6"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponMace(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Mace"
-  WeaponType = "Simple, melee"
-  WeaponRange = ""
-  DamageType ~ "bludgeoning"
-  DamageRoll = "1d6"
-  | MeleeWeapon
+SDSpear (SDWeapon) {
+    WeaponName! ~ "Spear"
+    DamageRoll! ~ "1d6"
+    WeaponRange! ~ "close/near"
 }
 
-NpcWeaponQuarterstaff(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Quarterstaff"
-  WeaponType = "Simple, versatile"
-  WeaponRange = ""
-  DamageType ~ "bludgeoning"
-  DamageRoll = "1d6"
-  | MeleeWeapon
+SDStaff (SDWeapon) {
+    WeaponName! ~ "Staff"
+    DamageRoll! ~ "1d4"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponSickle(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Sickle"
-  WeaponType = "Simple, light"
-  WeaponRange = ""
-  DamageType ~ "slashing"
-  DamageRoll = "1d4"
-  | MeleeWeapon
+SDWarhammer (SDWeapon) {
+    WeaponName! ~ "Warhammer"
+    DamageRoll! ~ "1d10"
+    WeaponRange! ~ "close"
 }
 
-NpcWeaponSpear(RangedWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Spear"
-  WeaponType = "Simple, versatile, thrown"
-  WeaponRange = "range 20/60"
-  DamageType ~ "piercing"
-  DamageRoll = "1d6"
-  | RangedWeapon
+# ---------------------------------------------------------------------------
+# Ranged weapons
+# ---------------------------------------------------------------------------
+
+SDCrossbow (SDWeapon) {
+    WeaponName! ~ "Crossbow"
+    DamageRoll! ~ "1d6"
+    WeaponRange! ~ "far"
 }
 
-NpcWeaponLightCrossbow(RangedWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Light Crossbow"
-  WeaponType = "Simple, ranged"
-  WeaponRange = "range 80/320"
-  DamageType ~ "piercing"
-  DamageRoll = "1d8"
-  | RangedWeapon
+SDLongbow (SDWeapon) {
+    WeaponName! ~ "Longbow"
+    DamageRoll! ~ "1d8"
+    WeaponRange! ~ "far"
 }
 
-NpcWeaponDart(RangedWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Dart"
-  WeaponType = "Simple, thrown"
-  WeaponRange = "range 20/60"
-  DamageType ~ "piercing"
-  DamageRoll = "1d4"
-  | RangedWeapon
+SDShortbow (SDWeapon) {
+    WeaponName! ~ "Shortbow"
+    DamageRoll! ~ "1d4"
+    WeaponRange! ~ "far"
 }
 
-NpcWeaponShortbow(RangedWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Shortbow"
-  WeaponType = "Simple, ranged"
-  WeaponRange = "range 80/320"
-  DamageType ~ "piercing"
-  DamageRoll = "1d6"
-  | RangedWeapon
+# ---------------------------------------------------------------------------
+# Weapon pools by type
+# ---------------------------------------------------------------------------
+
+SDMeleeWeapon {
+    ^ [
+        * SDBastardSword
+        * SDClub
+        * SDDagger
+        * SDGreataxe
+        * SDGreatsword
+        * SDLongsword
+        * SDMace
+        * SDShortsword
+        * SDSpear
+        * SDWarhammer
+    ]
 }
 
-NpcWeaponSling(RangedWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Sling"
-  WeaponType = "Simple, ranged"
-  WeaponRange = "range 30/120"
-  DamageType ~ "bludgeoning"
-  DamageRoll = "1d4"
-  | RangedWeapon
+SDRangedWeapon {
+    ^ [
+        * SDCrossbow
+        * SDLongbow
+        * SDShortbow
+        * SDJavelin
+    ]
 }
 
-NpcWeaponBattleaxe(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Battleaxe"
-  WeaponType = "Martial, versatile"
-  WeaponRange = ""
-  DamageType ~ "slashing"
-  DamageRoll = "1d8"
-  | MeleeWeapon
-}
-
-NpcWeaponFlail(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Flail"
-  WeaponType = "Martial, melee"
-  WeaponRange = ""
-  DamageType ~ "bludgeoning"
-  DamageRoll = "1d8"
-  | MeleeWeapon
-}
-
-NpcWeaponGlaive(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Glaive"
-  WeaponType = "Martial, heavy, reach"
-  WeaponRange = ""
-  DamageType ~ "slashing"
-  DamageRoll = "1d10"
-  | MeleeWeapon
-}
-
-NpcWeaponLongsword(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Longsword"
-  WeaponType = "Martial, versatile"
-  WeaponRange = ""
-  DamageType ~ "slashing"
-  DamageRoll = "1d8"
-  | MeleeWeapon
-}
-
-NpcWeaponPike(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Pike"
-  WeaponType = "Martial, heavy, reach"
-  WeaponRange = ""
-  DamageType ~ "piercing"
-  DamageRoll = "1d10"
-  | MeleeWeapon
-}
-
-NpcWeaponRapier(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Rapier"
-  WeaponType = "Martial, finesse"
-  WeaponRange = ""
-  DamageType ~ "piercing"
-  DamageRoll = "1d8"
-  | MeleeWeapon
-}
-
-NpcWeaponShortsword(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Shortsword"
-  WeaponType = "Martial, finesse, light"
-  WeaponRange = ""
-  DamageType ~ "piercing"
-  DamageRoll = "1d6"
-  | MeleeWeapon
-}
-
-NpcWeaponTrident(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Trident"
-  WeaponType = "Martial, thrown, versatile"
-  WeaponRange = "range 20/60"
-  DamageType ~ "piercing"
-  DamageRoll = "1d6"
-  | MeleeWeapon
-}
-
-NpcWeaponWarpick(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Warpick"
-  WeaponType = "Martial, melee"
-  WeaponRange = ""
-  DamageType ~ "piercing"
-  DamageRoll = "1d8"
-  | MeleeWeapon
-}
-
-NpcWeaponWhip(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Whip"
-  WeaponType = "Martial, finesse"
-  WeaponRange = ""
-  DamageType ~ "slashing"
-  DamageRoll = "1d4"
-  | MeleeWeapon
-}
-
-NpcWeaponNet(MeleeWeapon) {
-  WeaponBonus = 0
-  WeaponName = "Net"
-  WeaponType = "Martial, ranged, special"
-  WeaponRange = "range 5/15"
-  DamageType ~ ""
-  DamageRoll = ""
-  | MeleeWeapon
+SDFighterWeapon {
+    ^ [
+        *(x3) SDBastardSword
+        *(x3) SDLongsword
+        *(x3) SDGreatsword
+        *(x2) SDWarhammer
+        *(x2) SDGreataxe
+        *(x2) SDMace
+               SDShortsword
+               SDSpear
+               SDLongbow
+               SDCrossbow
+    ]
 }
