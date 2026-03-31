@@ -1,90 +1,57 @@
-# Hexroll Scroll Model is open-source software released under the terms of the
-# GPL Affero Public License v3.
-#
-# Copyright (C) 2024-2025 Ithai Levi ithai@pendicepaper.com
-#
-# This document contains Open Game Content, subject to the Open Game License,
-# released un the Open Game License, Version 1.0a (enclosed in the LICENSE
-# file), as described in Section 1(d) of the License.
-5eMonster (Monster) {
-  Title! :: STRING
-  Size! :: STRING
-  CreatureType! :: STRING
-  Alignment! :: STRING
-  Armor! :: STRING
-  Initiative! :: STRING
-  HitDiceText! :: STRING
-  HitDiceRoll! :: STRING
-  HitDice! :: INTEGER
-  Movement! :: STRING
-  Strength! :: STRING
-  Dexterity! :: STRING
-  Constitution! :: STRING
-  Intelligence! :: STRING
-  Wisdom! :: STRING
-  Charisma! :: STRING
-  SavingThrows! :: STRING
-  Skills :: STRING
-  Vulnerabilities :: STRING
-  Resistances :: STRING
-  Immunities :: STRING
-  Gear :: STRING
-  Senses! :: STRING
-  Languages! :: STRING
-  XP! :: NUMBER
-  CR! :: STRING
-  Traits :: STRING
-  Actions :: STRING
-  NumberAppearingHex! :: DICE
-  NumberAppearingDungeonArea! :: DICE
-  TreasureType! :: TYPE(TreasureType)
+# ----------------------------------------
+# Replaces the 5e monster base class.
+# Stat block matches Shadowdark format:
+# AC, HP, ATK, MV, S/D/C/I/W/Ch, AL, LV
 
-  StrengthModifier ~ <%{%if round((Strength - 10) / 2,0)!=0%}{%if round((Strength - 10) / 2,0)>0%}+{%endif%}{{round((Strength - 10) / 2,0)}}{%endif%}%>
-  DexterityModifier ~ <%{%if round((Dexterity - 10) / 2,0)!=0%}{%if round((Dexterity - 10) / 2,0)>0%}+{%endif%}{{round((Dexterity - 10) / 2,0)}}{%endif%}%>
-  ConstitutionModifier ~ <%{%if round((Constitution - 10) / 2,0)!=0%}{%if round((Constitution - 10) / 2,0)>0%}+{%endif%}{{round((Constitution - 10) / 2,0)}}{%endif%}%>
-  IntelligenceModifier ~ <%{%if round((Intelligence - 10) / 2,0)!=0%}{%if round((Intelligence - 10) / 2,0)>0%}+{%endif%}{{round((Intelligence - 10) / 2,0)}}{%endif%}%>
-  WisdomModifier ~ <%{%if round((Wisdom - 10) / 2,0)!=0%}{%if round((Wisdom - 10) / 2,0)>0%}+{%endif%}{{round((Wisdom - 10) / 2,0)}}{%endif%}%>
-  CharismaModifier ~ <%{%if round((Charisma - 10) / 2,0)!=0%}{%if round((Charisma - 10) / 2,0)>0%}+{%endif%}{{round((Charisma - 10) / 2,0)}}{%endif%}%>
+SDMonster (Monster) {
+    Title!                  :: STRING
+    AC!                     :: STRING
+    HP!                     :: STRING
+    ATK!                    :: STRING
+    MV!                     :: STRING
+    Strength!               :: STRING
+    Dexterity!              :: STRING
+    Constitution!           :: STRING
+    Intelligence!           :: STRING
+    Wisdom!                 :: STRING
+    Charisma!               :: STRING
+    Alignment!              :: STRING
+    LV!                     :: INTEGER
+    HitDice!                :: INTEGER
+    HitDiceRoll!            :: STRING
+    NumberAppearingHex!     :: DICE
+    NumberAppearingDungeonArea! :: DICE
+    TreasureType!           :: TYPE(TreasureType)
+    Traits                  :: STRING
+    Actions                 :: STRING
 
-  Stats! ~ <%
-    <div id="block-{{uuid}}" class="monster-block">
+    Stats! ~ <%
+        <div id="block-{{uuid}}" class="monster-block">
         <div class="statblock">
-            <div class="statblock-top-row">
-                <div><span class="section-label">CR:</span> {{CR}} ({{XP}} XP)</div>
-                <div><span class="section-label">AC:</span> {{Armor}}</div>
-                <div><span class="section-label">HP:</span> {{HitDiceText}} ({{HitDiceRoll}})</div>
-                <div><span class="section-label">Speed:</span> {{Movement}}</div>
-            </div>
-            <table class="statblock-table">
-                <tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr>
-                <tr>
-                <td>{{Strength}} <small> {{StrengthModifier}} </small> </td>
-                <td>{{Dexterity}} <small> {{DexterityModifier}} </small> </td>
-                <td>{{Constitution}} <small> {{ConstitutionModifier}} </small> </td>
-                <td>{{Intelligence}} <small> {{IntelligenceModifier}} </small> </td>
-                <td>{{Wisdom}} <small> {{WisdomModifier}} </small> </td>
-                <td>{{Charisma}} <small> {{CharismaModifier}} </small> </td>
-                </tr>
-            </table>
-            <div>
-            <input class="monster-block-toggle" name="toggle-{{uuid}}" id="toggle-{{uuid}}" type="checkbox" onclick="javascript:document.getElementById('block-{{uuid}}').scrollIntoView();"/>
+        <hr/>
+        <div class="statblock-top-row">
+            <div><span class="section-label">AC:</span> {{AC}}</div>
+            <div><span class="section-label">HP:</span> {{HP}}</div>
+            <div><span class="section-label">ATK:</span> {{ATK}}</div>
+            <div><span class="section-label">MV:</span> {{MV}}</div>
+        </div>
+        <table class="statblock-table">
+            <tr><th>S</th><th>D</th><th>C</th><th>I</th><th>W</th><th>Ch</th></tr>
+            <tr>
+                <td>{{Strength}}</td>
+                <td>{{Dexterity}}</td>
+                <td>{{Constitution}}</td>
+                <td>{{Intelligence}}</td>
+                <td>{{Wisdom}}</td>
+                <td>{{Charisma}}</td>
+            </tr>
+        </table>
+        <div>
+            <input class="monster-block-toggle" name="toggle-{{uuid}}" id="toggle-{{uuid}}" type="checkbox"
+                onclick="javascript:document.getElementById('block-{{uuid}}').scrollIntoView();"/>
             <div id="block-toggle-{{uuid}}" class="statblock-container">
                 <ul>
-                {% if SavingThrows != "" %}
-                <li><strong>Saving Throws: </strong> {{SavingThrows}}</li>
-                {% endif %}
-                {% if DamageImmunities != "" %}
-                <li><strong>Immunities: </strong> {{DamageImmunities}}</li>
-                {% endif %}
-                {% if Senses != "" %}
-                <li><strong>Senses: </strong> {{Senses}}</li>
-                {% endif %}
-                {% if Alignment != "Unaligned" %}
-                <li><strong>Alignment: </strong> {{Alignment}}</li>
-                {% endif %}
-                {% if Languages != "" %}
-                <li><strong>Languages: </strong> {{Languages}}</li>
-                {% endif %}
+                    <li><strong>AL:</strong> {{Alignment}} &nbsp; <strong>LV:</strong> {{LV}}</li>
                 </ul>
                 {% if exists("Traits") %}
                 <hr/>
@@ -96,39 +63,42 @@
                 <div>{{Actions}}</div>
                 {% endif %}
             </div>
-            </div>
         </div>
-    </div>
+        </div>
+        </div>
     %>
-  | Monster
+
+    | Monster
 }
 
-5eMonsterEvilBoss (5eMonster) {
-  BossName! @ EvilName
-  DungeonName! = :Dungeon.Name
-  DungeonUUID! = :Dungeon.uuid
-  AreaUUID! = :AreaDescription.uuid
-  | 5eMonster
+# Boss monster — has a name, dungeon, and backstory
+SDMonsterBoss (SDMonster) {
+    BossName!  @ EvilName
+    DungeonName!  = :Dungeon.Name
+    DungeonUUID!  = :Dungeon.uuid
+    AreaUUID!     = :AreaDescription.uuid
+    | SDMonster
 }
 
-5eMonsterEvilUndeadBoss (5eMonsterEvilBoss ) {
-  BackgroundStory! @ [
-    * Tormented by the violent death of a beloved
-    * Filled with raging wrath for an eternal rival
-    * Greedy beyond the grasp of mortal satisfaction
-    * Vengeful and bitter for a long-forgotten betrayal
-    * Consumed by an everlasting hunger for forbidden knowledge
-    * Eternally cursed to roam the depths of darkness
-    * Hunting innocent mortal souls for ancient evil rituals
-    * Obsessed with reclaiming a long forgotten throne
-    * Relentlessly pursuing boundless immortal power
-    * Haunted by the echoes of their own dark secrets
-    * Feeding on mortal fear and pain
-    * Searching for helpless souls to feed their evil desires
-    * Yearning to reunion with their long-lost spirits of despair
-    * Bound to a cursed artifact, thirsting for release
-    * Searching for a pure soul to pay for their dark sins
-    * Searching for a way to unbound from their even more sinister master
-  ]
-  | 5eMonsterEvilBoss
+# Undead boss variant with a backstory
+SDMonsterUndeadBoss (SDMonsterBoss) {
+    BackgroundStory! @ [
+        * Tormented by the violent death of a beloved
+        * Filled with raging wrath for an eternal rival
+        * Greedy beyond the grasp of mortal satisfaction
+        * Vengeful and bitter for a long-forgotten betrayal
+        * Consumed by an everlasting hunger for forbidden knowledge
+        * Eternally cursed to roam the depths of darkness
+        * Hunting innocent mortal souls for ancient evil rituals
+        * Obsessed with reclaiming a long forgotten throne
+        * Relentlessly pursuing boundless immortal power
+        * Haunted by the echoes of their own dark secrets
+        * Feeding on mortal fear and pain
+        * Searching for helpless souls to feed their evil desires
+        * Yearning to reunion with their long-lost spirits of despair
+        * Bound to a cursed artifact, thirsting for release
+        * Searching for a pure soul to pay for their dark sins
+        * Searching for a way to unbound from their even more sinister master
+    ]
+    | SDMonsterBoss
 }
