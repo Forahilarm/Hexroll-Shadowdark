@@ -20,6 +20,29 @@ SDNPC (Character) {
         * Chaotic
     ]
 
+    Background! @ [
+        * Urchin. You grew up in the merciless streets of a large city
+        * Wanted. There's a price on your head, but you have allies
+        * Cult Initiate. You know blasphemous secrets and rituals
+        * Thieves' Guild. You have connections, contacts, and debts
+        * Banished. Your people cast you out for supposed crimes
+        * Orphaned. An unusual guardian rescued and raised you
+        * Wizard's Apprentice. You have a knack and eye for magic
+        * Jeweler. You can easily appraise value and authenticity
+        * Herbalist. You know plants, medicines, and poisons
+        * Barbarian. You left the horde, but it never quite left you
+        * Mercenary. You fought friend and foe alike for your coin
+        * Sailor. Pirate, privateer, or merchant — the seas are yours
+        * Acolyte. You're well trained in religious rites and doctrines
+        * Soldier. You served as a fighter in an organized army
+        * Ranger. The woods and wilds are your true home
+        * Scout. You survived on stealth, observation, and speed
+        * Minstrel. You've traveled far with your charm and talent
+        * Scholar. You know much about ancient history and lore
+        * Noble. A famous name has opened many doors for you
+        * Chirurgeon. You know anatomy, surgery, and first aid
+    ]
+
     Profession! = none
 
     Appearance! @ [
@@ -40,18 +63,6 @@ SDNPC (Character) {
         Icon = "user"
     }
 
-    # Shadowdark modifier formula: round((stat - 10.5) / 2, 0)
-    StrMod! ~ <%{{round((BaseStrength - 10.5) / 2, 0)}}%>
-    DexMod! ~ <%{{round((BaseDexterity - 10.5) / 2, 0)}}%>
-    ConMod! ~ <%{{round((BaseConstitution - 10.5) / 2, 0)}}%>
-    IntMod! ~ <%{{round((BaseIntelligence - 10.5) / 2, 0)}}%>
-    WisMod! ~ <%{{round((BaseWisdom - 10.5) / 2, 0)}}%>
-    ChaMod! ~ <%{{round((BaseCharisma - 10.5) / 2, 0)}}%>
-
-    # HP = hit die + CON mod at level 1 (minimum 1)
-    CalculatedHitPoints! ~ <%{{max(HitPoints + round((BaseConstitution - 10.5) / 2, 0), 1)}}%>
-
-    # AC = 10 + DEX mod unarmored, or armor value (set by class)
     CalculatedAC! ~ <%{{ArmorValue}}%>
 
     Description! ~ <%
@@ -70,25 +81,78 @@ SDNPC (Character) {
         {% set IntMod = round((BaseIntelligence - 10.5) / 2, 0) %}
         {% set WisMod = round((BaseWisdom - 10.5) / 2, 0) %}
         {% set ChaMod = round((BaseCharisma - 10.5) / 2, 0) %}
-
         <div id="block-{{uuid}}" class="monster-block">
         <div class="statblock">
         <hr/>
         <div class="statblock-top-row">
             <div><span class="section-label">LV:</span> {{Level}}</div>
             <div><span class="section-label">AC:</span> {{CalculatedAC}}</div>
-            <div><span class="section-label">HP:</span> {{CalculatedHitPoints}}</div>
+            <div><span class="section-label">HP:</span> {{CalculatedHP}}</div>
             <div><span class="section-label">MV:</span> {{Race.BaseWalkingSpeed}}</div>
         </div>
+        {% set StrBonus = 0 %}
+        {% set DexBonus = 0 %}
+        {% set ConBonus = 0 %}
+        {% set IntBonus = 0 %}
+        {% set WisBonus = 0 %}
+        {% set ChaBonus = 0 %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent1") and Talent1.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent3") and Talent3.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent4") and Talent4.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent5") and Talent5.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to STR" %}{% set StrBonus = StrBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to DEX" %}{% set DexBonus = DexBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to CON" %}{% set ConBonus = ConBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to INT" %}{% set IntBonus = IntBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to WIS" %}{% set WisBonus = WisBonus + 2 %}{% endif %}
+        {% if exists("Talent6") and Talent6.Description == "+2 to CHA" %}{% set ChaBonus = ChaBonus + 2 %}{% endif %}
+        {% set FinalStr = BaseStrength + StrBonus %}
+        {% set FinalDex = BaseDexterity + DexBonus %}
+        {% set FinalCon = BaseConstitution + ConBonus %}
+        {% set FinalInt = BaseIntelligence + IntBonus %}
+        {% set FinalWis = BaseWisdom + WisBonus %}
+        {% set FinalCha = BaseCharisma + ChaBonus %}
+        {% set FinalStrMod = round((FinalStr - 10.5) / 2, 0) %}
+        {% set FinalDexMod = round((FinalDex - 10.5) / 2, 0) %}
+        {% set FinalConMod = round((FinalCon - 10.5) / 2, 0) %}
+        {% set FinalIntMod = round((FinalInt - 10.5) / 2, 0) %}
+        {% set FinalWisMod = round((FinalWis - 10.5) / 2, 0) %}
+        {% set FinalChaMod = round((FinalCha - 10.5) / 2, 0) %}
         <table class="statblock-table">
-            <tr><th>S</th><th>D</th><th>C</th><th>I</th><th>W</th><th>Ch</th></tr>
+            <tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr>
             <tr>
-                <td>{{signed_modifier(StrMod)}}</td>
-                <td>{{signed_modifier(DexMod)}}</td>
-                <td>{{signed_modifier(ConMod)}}</td>
-                <td>{{signed_modifier(IntMod)}}</td>
-                <td>{{signed_modifier(WisMod)}}</td>
-                <td>{{signed_modifier(ChaMod)}}</td>
+                <td>{{FinalStr}} ({{signed_modifier(FinalStrMod)}})</td>
+                <td>{{FinalDex}} ({{signed_modifier(FinalDexMod)}})</td>
+                <td>{{FinalCon}} ({{signed_modifier(FinalConMod)}})</td>
+                <td>{{FinalInt}} ({{signed_modifier(FinalIntMod)}})</td>
+                <td>{{FinalWis}} ({{signed_modifier(FinalWisMod)}})</td>
+                <td>{{FinalCha}} ({{signed_modifier(FinalChaMod)}})</td>
             </tr>
         </table>
         <div>
@@ -96,16 +160,54 @@ SDNPC (Character) {
                 onclick="javascript:document.getElementById('block-{{uuid}}').scrollIntoView();"/>
             <div id="block-toggle-{{uuid}}" class="statblock-container">
                 <ul>
-                    <li><strong>ATK:</strong> {{Weapon.Stats}}</li>
+                    {% if exists("MeleeATK") or exists("RangedATK") %}
+                    <li><strong>ATK:</strong>
+                        {% if exists("MeleeATK") %}Melee: {{MeleeATK}}{% endif %}
+                        {% if exists("MeleeATK") and exists("RangedATK") %} &nbsp;|&nbsp; {% endif %}
+                        {% if exists("RangedATK") %}Ranged: {{RangedATK}}{% endif %}
+                    </li>
+                    {% endif %}
+                    {% if exists("IntCasting") or exists("WisCasting") %}
+                    <li><strong>Casting:</strong>
+                        {% if exists("IntCasting") %}INT: {{IntCasting}}{% endif %}
+                        {% if exists("IntCasting") and exists("WisCasting") %} &nbsp;|&nbsp; {% endif %}
+                        {% if exists("WisCasting") %}WIS: {{WisCasting}}{% endif %}
+                    </li>
+                    {% endif %}
                     <li><strong>AL:</strong> {{Alignment}}</li>
-                    {% if Languages != "" %}
+                    <li><strong>Title:</strong>
+                        {% if Alignment == "Lawful" %}
+                            {% if Level <= 2 %}Squire{% else if Level <= 4 %}Cavalier{% else if Level <= 6 %}Knight{% else if Level <= 8 %}Thane{% else %}Lord{% endif %}
+                        {% else if Alignment == "Chaotic" %}
+                            {% if Level <= 2 %}Knave{% else if Level <= 4 %}Bandit{% else if Level <= 6 %}Slayer{% else if Level <= 8 %}Reaver{% else %}Warlord{% endif %}
+                        {% else %}
+                            {% if Level <= 2 %}Warrior{% else if Level <= 4 %}Barbarian{% else if Level <= 6 %}Battlerager{% else if Level <= 8 %}Warchief{% else %}Chieftain{% endif %}
+                        {% endif %}
+                    </li>
+                    {% if exists("Background") %}
+                    <li><strong>Background:</strong> {{Background}}</li>
+                    {% endif %}
+                    {% if exists("Languages") %}
                     <li><strong>Languages:</strong> {{Languages}}</li>
                     {% endif %}
                     {% if Race.RacialTraits != "" %}
                     <li><strong>{{Race.Title}}:</strong> {{Race.RacialTraits}}</li>
                     {% endif %}
+                    {% if exists("ClassTalents") %}
+                    <li><strong>Talents:</strong> {{ClassTalents}}</li>
+                    {% endif %}
                     {% if exists("ClassAbility") %}
                     <li><strong>{{Class}}:</strong> {{ClassAbility}}</li>
+                    {% endif %}
+                    {% set ACB = 0 %}
+                    {% if exists("Talent1") and Talent1.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent2") and Race.class == "RaceHuman" and Talent2.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent3") and Talent3.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent4") and Talent4.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent5") and Talent5.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if exists("Talent6") and Talent6.Description == "+1 AC from chosen armor type" %}{% set ACB = ACB + 1 %}{% endif %}
+                    {% if ACB > 0 %}
+                    <li><strong>AC Talent:</strong> +{{ACB}} ({{Armor.Name}})</li>
                     {% endif %}
                 </ul>
             </div>
@@ -114,68 +216,5 @@ SDNPC (Character) {
         </div>
     %>
 
-    Languages ~ <% {{Race.BaseLanguages}} %>
-}
-
-TavernVisitor (SDNPC) {
-    ^ [
-        *(x10) FighterLevel1
-        *(x8)  FighterLevel2
-        *(x6)  FighterLevel3
-        *(x4)  FighterLevel4
-        *(x2)  FighterLevel5
-        *(x2)  FighterLevel6
-        *(x2)  FighterLevel7
-               FighterLevel8
-               FighterLevel9
-               FighterLevel10
-        *(x10) ThiefLevel1
-        *(x8)  ThiefLevel2
-        *(x6)  ThiefLevel3
-        *(x4)  ThiefLevel4
-        *(x2)  ThiefLevel5
-        *(x2)  ThiefLevel6
-        *(x2)  ThiefLevel7
-               ThiefLevel8
-               ThiefLevel9
-               ThiefLevel10
-        *(x10) PriestLevel1
-        *(x8)  PriestLevel2
-        *(x6)  PriestLevel3
-        *(x4)  PriestLevel4
-        *(x2)  PriestLevel5
-        *(x2)  PriestLevel6
-        *(x2)  PriestLevel7
-               PriestLevel8
-               PriestLevel9
-               PriestLevel10
-        *(x10) WizardLevel1
-        *(x8)  WizardLevel2
-        *(x6)  WizardLevel3
-        *(x4)  WizardLevel4
-        *(x2)  WizardLevel5
-        *(x2)  WizardLevel6
-        *(x2)  WizardLevel7
-               WizardLevel8
-               WizardLevel9
-               WizardLevel10
-    ]
-}
-
-# Test
-main {
-    [6..6 npcs] @@ [
-        * FighterLevel1
-        * FighterLevel2
-        * ThiefLevel1
-        * WizardLevel1
-        * PriestLevel1
-        * FighterLevel3
-    ]
-    <html%
-    {% for npc in npcs %}
-    <h3>{{npc.Description}}</h3>
-    {{npc.Stats}}
-    {% endfor %}
-    %html>
+    Languages! ~ <% {{Race.BaseLanguages}} %>
 }
