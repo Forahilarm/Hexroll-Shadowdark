@@ -9,141 +9,33 @@ SDWeapon {
     WeaponName! :: STRING
     DamageRoll! :: STRING
     WeaponRange! :: STRING
-    AttackMod = 0
-    Stats! ~ <%
-        <strong>{{WeaponName}}</strong>
-        {%if AttackMod >= 0%}+{{AttackMod}}{%else%}{{AttackMod}}{%endif%}
-        ({{DamageRoll}})
-    %>
 }
+
+# Melee — STR based
+SDBastardSword (SDWeapon) { WeaponName! ~ "Bastard sword" DamageRoll! ~ "1d8" WeaponRange! ~ "close" }
+SDGreatsword (SDWeapon) { WeaponName! ~ "Greatsword" DamageRoll! ~ "1d12" WeaponRange! ~ "close" }
+SDLongsword (SDWeapon) { WeaponName! ~ "Longsword" DamageRoll! ~ "1d8" WeaponRange! ~ "close" }
+SDWarhammer (SDWeapon) { WeaponName! ~ "Warhammer" DamageRoll! ~ "1d10" WeaponRange! ~ "close" }
+SDGreataxe (SDWeapon) { WeaponName! ~ "Greataxe" DamageRoll! ~ "1d8" WeaponRange! ~ "close" }
+SDMace (SDWeapon) { WeaponName! ~ "Mace" DamageRoll! ~ "1d6" WeaponRange! ~ "close" }
+SDSpear (SDWeapon) { WeaponName! ~ "Spear" DamageRoll! ~ "1d6" WeaponRange! ~ "close/near" }
+SDClub (SDWeapon) { WeaponName! ~ "Club" DamageRoll! ~ "1d4" WeaponRange! ~ "close" }
+
+# Finesse — DEX based
+SDShortsword (SDWeapon) { WeaponName! ~ "Shortsword" DamageRoll! ~ "1d6" WeaponRange! ~ "close" }
+SDDagger (SDWeapon) { WeaponName! ~ "Dagger" DamageRoll! ~ "1d4" WeaponRange! ~ "close/near" }
+
+# Ranged — DEX based
+SDLongbow (SDWeapon) { WeaponName! ~ "Longbow" DamageRoll! ~ "1d8" WeaponRange! ~ "far" }
+SDCrossbow (SDWeapon) { WeaponName! ~ "Crossbow" DamageRoll! ~ "1d6" WeaponRange! ~ "far" }
+SDShortbow (SDWeapon) { WeaponName! ~ "Shortbow" DamageRoll! ~ "1d4" WeaponRange! ~ "far" }
+SDJavelin (SDWeapon) { WeaponName! ~ "Javelin" DamageRoll! ~ "1d4" WeaponRange! ~ "near" }
 
 # ---------------------------------------------------------------------------
-# Melee weapons
+# WEAPON POOLS
 # ---------------------------------------------------------------------------
 
-SDBastardSword (SDWeapon) {
-    WeaponName! ~ "Bastard sword"
-    DamageRoll! ~ "1d8"
-    WeaponRange! ~ "close"
-}
-
-SDClub (SDWeapon) {
-    WeaponName! ~ "Club"
-    DamageRoll! ~ "1d4"
-    WeaponRange! ~ "close"
-}
-
-SDDagger (SDWeapon) {
-    WeaponName! ~ "Dagger"
-    DamageRoll! ~ "1d4"
-    WeaponRange! ~ "close/near"
-}
-
-SDGreataxe (SDWeapon) {
-    WeaponName! ~ "Greataxe"
-    DamageRoll! ~ "1d8"
-    WeaponRange! ~ "close"
-}
-
-SDGreatsword (SDWeapon) {
-    WeaponName! ~ "Greatsword"
-    DamageRoll! ~ "1d12"
-    WeaponRange! ~ "close"
-}
-
-SDJavelin (SDWeapon) {
-    WeaponName! ~ "Javelin"
-    DamageRoll! ~ "1d4"
-    WeaponRange! ~ "close/far"
-}
-
-SDLongsword (SDWeapon) {
-    WeaponName! ~ "Longsword"
-    DamageRoll! ~ "1d8"
-    WeaponRange! ~ "close"
-}
-
-SDMace (SDWeapon) {
-    WeaponName! ~ "Mace"
-    DamageRoll! ~ "1d6"
-    WeaponRange! ~ "close"
-}
-
-SDShortsword (SDWeapon) {
-    WeaponName! ~ "Shortsword"
-    DamageRoll! ~ "1d6"
-    WeaponRange! ~ "close"
-}
-
-SDSpear (SDWeapon) {
-    WeaponName! ~ "Spear"
-    DamageRoll! ~ "1d6"
-    WeaponRange! ~ "close/near"
-}
-
-SDStaff (SDWeapon) {
-    WeaponName! ~ "Staff"
-    DamageRoll! ~ "1d4"
-    WeaponRange! ~ "close"
-}
-
-SDWarhammer (SDWeapon) {
-    WeaponName! ~ "Warhammer"
-    DamageRoll! ~ "1d10"
-    WeaponRange! ~ "close"
-}
-
-# ---------------------------------------------------------------------------
-# Ranged weapons
-# ---------------------------------------------------------------------------
-
-SDCrossbow (SDWeapon) {
-    WeaponName! ~ "Crossbow"
-    DamageRoll! ~ "1d6"
-    WeaponRange! ~ "far"
-}
-
-SDLongbow (SDWeapon) {
-    WeaponName! ~ "Longbow"
-    DamageRoll! ~ "1d8"
-    WeaponRange! ~ "far"
-}
-
-SDShortbow (SDWeapon) {
-    WeaponName! ~ "Shortbow"
-    DamageRoll! ~ "1d4"
-    WeaponRange! ~ "far"
-}
-
-# ---------------------------------------------------------------------------
-# Weapon pools by type
-# ---------------------------------------------------------------------------
-
-SDMeleeWeapon {
-    ^ [
-        * SDBastardSword
-        * SDClub
-        * SDDagger
-        * SDGreataxe
-        * SDGreatsword
-        * SDLongsword
-        * SDMace
-        * SDShortsword
-        * SDSpear
-        * SDWarhammer
-    ]
-}
-
-SDRangedWeapon {
-    ^ [
-        * SDCrossbow
-        * SDLongbow
-        * SDShortbow
-        * SDJavelin
-    ]
-}
-
-SDFighterWeapon {
+SDFighterMelee {
     ^ [
         *(x3) SDBastardSword
         *(x3) SDLongsword
@@ -151,9 +43,110 @@ SDFighterWeapon {
         *(x2) SDWarhammer
         *(x2) SDGreataxe
         *(x2) SDMace
-               SDShortsword
-               SDSpear
-               SDLongbow
-               SDCrossbow
+        *     SDSpear
+        *     SDClub
+    ]
+}
+
+SDDEXFighterMelee {
+    ^ [
+        *(x3) SDShortsword
+        *(x2) SDDagger
+        *     SDSpear
+    ]
+}
+
+SDFighterRanged {
+    ^ [
+        *(x3) SDLongbow
+        *(x2) SDCrossbow
+        *(x2) SDShortbow
+        *     SDJavelin
+    ]
+}
+
+SDFighterMasteryOther {
+    ^ [
+        * SDBastardSword
+        * SDGreatsword
+        * SDLongsword
+        * SDWarhammer
+        * SDGreataxe
+        * SDMace
+        * SDSpear
+        * SDClub
+    ]
+}
+
+SDDEXFighterMasteryOther {
+    ^ [
+        * SDShortsword
+        * SDDagger
+        * SDSpear
+        * SDLongbow
+        * SDCrossbow
+        * SDShortbow
+    ]
+}
+
+# ---------------------------------------------------------------------------
+# ARMOR
+# ---------------------------------------------------------------------------
+
+SDLeatherArmor {
+    Name! ~ "Leather"
+    BaseAC! = 11
+    UsesDex! = true
+}
+
+SDLeatherArmorShield {
+    Name! ~ "Leather + shield"
+    BaseAC! = 11
+    UsesDex! = true
+    ShieldBonus! = 2
+}
+
+SDChainmail {
+    Name! ~ "Chainmail"
+    BaseAC! = 13
+    UsesDex! = true
+}
+
+SDChainmailShield {
+    Name! ~ "Chainmail + shield"
+    BaseAC! = 13
+    UsesDex! = true
+    ShieldBonus! = 2
+}
+
+SDPlatemail {
+    Name! ~ "Plate mail"
+    BaseAC! = 15
+    UsesDex! = false
+}
+
+SDPlatemailShield {
+    Name! ~ "Plate mail + shield"
+    BaseAC! = 15
+    UsesDex! = false
+    ShieldBonus! = 2
+}
+
+SDFighterArmor {
+    ^ [
+        *(x3) SDChainmail
+        *(x2) SDPlatemail
+        *(x2) SDChainmailShield
+        *(x2) SDPlatemailShield
+        *     SDLeatherArmor
+    ]
+}
+
+SDDEXFighterArmor {
+    ^ [
+        *(x3) SDLeatherArmor
+        *(x2) SDLeatherArmorShield
+        *(x2) SDChainmail
+        *     SDChainmailShield
     ]
 }
