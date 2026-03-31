@@ -4,8 +4,9 @@
 # Stat rolling happens in each class file, not here.
 # Description, appearance, state, and pockets are
 # preserved from the original 5e system unchanged.
-
-+ O5E
+#
+# ClassTitle is defined per class file — each class has
+# its own title table based on alignment and level.
 
 SDNPC (Character) {
     | Character
@@ -14,7 +15,7 @@ SDNPC (Character) {
 
     Alignment @ [
         * Lawful
-        * Neutral
+        * Lawful
         * Neutral
         * Neutral
         * Chaotic
@@ -175,15 +176,9 @@ SDNPC (Character) {
                     </li>
                     {% endif %}
                     <li><strong>AL:</strong> {{Alignment}}</li>
-                    <li><strong>Title:</strong>
-                        {% if Alignment == "Lawful" %}
-                            {% if Level <= 2 %}Squire{% else if Level <= 4 %}Cavalier{% else if Level <= 6 %}Knight{% else if Level <= 8 %}Thane{% else %}Lord{% endif %}
-                        {% else if Alignment == "Chaotic" %}
-                            {% if Level <= 2 %}Knave{% else if Level <= 4 %}Bandit{% else if Level <= 6 %}Slayer{% else if Level <= 8 %}Reaver{% else %}Warlord{% endif %}
-                        {% else %}
-                            {% if Level <= 2 %}Warrior{% else if Level <= 4 %}Barbarian{% else if Level <= 6 %}Battlerager{% else if Level <= 8 %}Warchief{% else %}Chieftain{% endif %}
-                        {% endif %}
-                    </li>
+                    {% if exists("ClassTitle") %}
+                    <li><strong>Title:</strong> {{ClassTitle}}</li>
+                    {% endif %}
                     {% if exists("Background") %}
                     <li><strong>Background:</strong> {{Background}}</li>
                     {% endif %}
