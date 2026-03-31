@@ -2,8 +2,6 @@
 # ----------------------------------
 # Ancestries sourced directly from Shadowdark RPG.
 
-+ O5E
-
 RaceHuman {
     Title! = "Human"
     BaseWalkingSpeed! = Near
@@ -114,22 +112,4 @@ Race {
         * RaceHalfOrc
         * RaceGoblin
     ]
-}
-
-# Test
-main {
-    [6..6 npcs] @@ [
-        * FighterLevel1
-        * FighterLevel2
-        * ThiefLevel1
-        * WizardLevel1
-        * PriestLevel1
-        * FighterLevel3
-    ]
-    <html%
-    {% for npc in npcs %}
-    <h3>{{npc.Description}}</h3>
-    {{npc.Stats}}
-    {% endfor %}
-    %html>
 }
