@@ -3,72 +3,38 @@
 # Stat block matches Shadowdark format:
 # AC, HP, ATK, MV, S/D/C/I/W/Ch, AL, LV
 
-SDMonster (Monster) {
-    Title!                  :: STRING
-    AC!                     :: STRING
-    HP!                     :: STRING
-    ATK!                    :: STRING
-    MV!                     :: STRING
-    Strength!               :: STRING
-    Dexterity!              :: STRING
-    Constitution!           :: STRING
-    Intelligence!           :: STRING
-    Wisdom!                 :: STRING
-    Charisma!               :: STRING
-    Alignment!              :: STRING
-    LV!                     :: INTEGER
-    HitDice!                :: INTEGER
-    HitDiceRoll!            :: STRING
-    NumberAppearingHex!     :: DICE
-    NumberAppearingDungeonArea! :: DICE
-    TreasureType!           :: TYPE(TreasureType)
-    Traits                  :: STRING
-    Actions                 :: STRING
++ O5E
 
-    Stats! ~ <%
-        <div id="block-{{uuid}}" class="monster-block">
-        <div class="statblock">
-        <hr/>
-        <div class="statblock-top-row">
-            <div><span class="section-label">AC:</span> {{AC}}</div>
-            <div><span class="section-label">HP:</span> {{HP}}</div>
-            <div><span class="section-label">ATK:</span> {{ATK}}</div>
-            <div><span class="section-label">MV:</span> {{MV}}</div>
-        </div>
-        <table class="statblock-table">
-            <tr><th>S</th><th>D</th><th>C</th><th>I</th><th>W</th><th>Ch</th></tr>
-            <tr>
-                <td>{{Strength}}</td>
-                <td>{{Dexterity}}</td>
-                <td>{{Constitution}}</td>
-                <td>{{Intelligence}}</td>
-                <td>{{Wisdom}}</td>
-                <td>{{Charisma}}</td>
-            </tr>
-        </table>
-        <div>
-            <input class="monster-block-toggle" name="toggle-{{uuid}}" id="toggle-{{uuid}}" type="checkbox"
-                onclick="javascript:document.getElementById('block-{{uuid}}').scrollIntoView();"/>
-            <div id="block-toggle-{{uuid}}" class="statblock-container">
-                <ul>
-                    <li><strong>AL:</strong> {{Alignment}} &nbsp; <strong>LV:</strong> {{LV}}</li>
-                </ul>
-                {% if exists("Traits") %}
-                <hr/>
-                <div>{{Traits}}</div>
-                {% endif %}
-                {% if exists("Actions") %}
-                <hr/>
-                <h6>Actions</h6>
-                <div>{{Actions}}</div>
-                {% endif %}
-            </div>
-        </div>
-        </div>
-        </div>
-    %>
+SDMonster {
+    Title! :: STRING
+    AC!    :: STRING
+    HP!    :: STRING
+    ATK!   :: STRING
+    MV!    :: STRING
+    STR!   :: STRING
+    DEX!   :: STRING
+    CON!   :: STRING
+    INT!   :: STRING
+    WIS!   :: STRING
+    CHA!   :: STRING
+    AL!    :: STRING
+    LV!    :: STRING
+    WN!    :: STRING
+    LN!    :: STRING
+    T1!    :: STRING
+    T2!    :: STRING
+    T3!    :: STRING
 
-    | Monster
+    <html%
+        <h3>{{Title}}</h3>
+        <p>AC: {{AC}} | HP: {{HP}} | ATK: {{ATK}} | MV: {{MV}}</p>
+        <p>STR: {{STR}} | DEX: {{DEX}} | CON: {{CON}} | INT: {{INT}} | WIS: {{WIS}} | CHA: {{CHA}}</p>
+        <p>AL: {{AL}} | LV: {{LV}}</p>
+        <p>Wilderness: {{WN}} | Lair: {{LN}}</p>
+        <p>{{T1}}</p>
+        <p>{{T2}}</p>
+        <p>{{T3}}</p>
+    %html>
 }
 
 # Boss monster — has a name, dungeon, and backstory
