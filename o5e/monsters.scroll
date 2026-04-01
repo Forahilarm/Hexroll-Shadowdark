@@ -22,3 +22,23 @@ Aboleth (SDMonster) {
     T2!    = "Enslave. In place of attacks, one creature within far DC 15 WIS or aboleth controls for 1d4 rounds."
     T3!    = "Telepathic. Read the thoughts of all creatures within far."
 }
+MonsterName (SDMonster) {
+    Title! = ""
+    AC!    = ""
+    HP!    = ""
+    ATK!   = ""
+    MV!    = ""
+    STR!   = ""
+    DEX!   = ""
+    CON!   = ""
+    INT!   = ""
+    WIS!   = ""
+    CHA!   = ""
+    AL!    = ""
+    LV!    = ""
+    WN!    = ""
+    LN!    = ""
+    T1!    = ""
+    T2!    = ""
+    T3!    = ""
+}
