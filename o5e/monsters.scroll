@@ -1,4 +1,6 @@
-
+# Shadowdark Races for Hexroll 2E
+# ----------------------------------
+# Monsters sourced directly from Shadowdark RPG.
 
 Aboleth (SDMonster) {
     Title! = "Aboleth"
